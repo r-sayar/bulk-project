@@ -1,0 +1,24 @@
+# Virtual environment
+venv/
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# macOS
+.DS_Store
+
+# Processed data (too large for git — regenerate via scripts/)
+processed_data/
+
+# Uncompressed raw data (use the .gz versions)
+data/GSE84133_RAW/*.csv
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
