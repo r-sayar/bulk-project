@@ -9,7 +9,9 @@ import numpy as np
 import gzip
 import os
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+SRC_ROOT = os.path.dirname(os.path.dirname(SCRIPT_DIR))
+REPO_ROOT = os.path.dirname(SRC_ROOT)
 
 print("=" * 60)
 print("SINGLE CELL GENE EXPRESSION ANALYSIS")
@@ -17,7 +19,7 @@ print("=" * 60)
 
 # Load the data
 print("\nLoading data...")
-df = pd.read_csv(os.path.join(PROJECT_ROOT, 'data/GSE84133_RAW/GSM2230757_human1_umifm_counts.csv.gz'), compression='gzip')
+df = pd.read_csv(os.path.join(REPO_ROOT, 'data/GSE84133_RAW/GSM2230757_human1_umifm_counts.csv.gz'), compression='gzip')
 
 print(f"\n1. DATASET OVERVIEW")
 print("-" * 40)

@@ -12,11 +12,12 @@ get_project_root <- function() {
     file_arg <- grep("^--file=", args, value = TRUE)
     if (length(file_arg) > 0) script_dir <- dirname(sub("^--file=", "", file_arg))
   }
-  if (is.null(script_dir)) script_dir <- "scripts/eda"
-  normalizePath(file.path(script_dir, "..", ".."), mustWork = FALSE)
+  if (is.null(script_dir)) script_dir <- "src/scripts/eda"
+  normalizePath(file.path(script_dir, "..", "..", ".."), mustWork = FALSE)
 }
-project_root <- get_project_root()
-setwd(project_root)
+repo_root <- get_project_root()
+src_root <- file.path(repo_root, "src")
+setwd(repo_root)
 
 # load libraries
 library(Seurat)
@@ -154,8 +155,8 @@ cat("Cell types:", paste(colnames(pseudo_bulk_matrix), collapse = ", "), "\n")
 head(pseudo_bulk_matrix)
 
 # Save to CSV
-write.csv(pseudo_bulk_matrix, "results/pseudo_bulk_by_celltype.csv", row.names = TRUE)
-cat("Saved pseudo-bulk matrix to: results/pseudo_bulk_by_celltype.csv\n")
+write.csv(pseudo_bulk_matrix, file.path(src_root, "results/pseudo_bulk_by_celltype.csv"), row.names = TRUE)
+cat("Saved pseudo-bulk matrix to: src/results/pseudo_bulk_by_celltype.csv\n")
 
 # =============================================================================
 # 9. Count genes with zero expression per cell type
@@ -403,8 +404,8 @@ if (requireNamespace("pheatmap", quietly = TRUE)) {
 }
 
 # Save category results
-write.csv(summary_table, "results/gene_category_summary.csv", row.names = FALSE)
-cat("\nSaved category summary to: results/gene_category_summary.csv\n")
+write.csv(summary_table, file.path(src_root, "results/gene_category_summary.csv"), row.names = FALSE)
+cat("\nSaved category summary to: src/results/gene_category_summary.csv\n")
 
 # =============================================================================
 # 11b. Specific Gene Lists (Transcription Factors, Kinases, etc.)
@@ -507,7 +508,7 @@ for (class_name in names(specific_lists)) {
   genes <- specific_lists[[class_name]]
   if (length(genes) > 0) {
     gene_expr <- pseudo_bulk_matrix[genes, , drop = FALSE]
-    write.csv(gene_expr, paste0("results/genes_", tolower(class_name), ".csv"))
+    write.csv(gene_expr, file.path(src_root, paste0("results/genes_", tolower(class_name), ".csv")))
   }
 }
 cat("\nSaved individual gene class files (genes_*.csv)\n")

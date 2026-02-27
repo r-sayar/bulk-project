@@ -40,7 +40,8 @@ from scipy.optimize import nnls, linear_sum_assignment
 np.random.seed(3407)
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
+SRC_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
+REPO_ROOT = os.path.abspath(os.path.join(SRC_ROOT, ".."))
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -79,7 +80,7 @@ def read_tsv_gz(path):
 def load_gsm8696075(data_dir=None):
     """Download and load 10x Matrix Market data from GEO (GSM8696075)."""
     if data_dir is None:
-        data_dir = os.path.join(PROJECT_ROOT, "data", "gsm8696075_10x")
+        data_dir = os.path.join(REPO_ROOT, "data", "gsm8696075_10x")
     os.makedirs(data_dir, exist_ok=True)
 
     urls = {
@@ -112,7 +113,7 @@ def load_gse84133(donor="human1"):
     Load pancreatic islet scRNA-seq from GSE84133 (CSV format).
     Available donors: human1, human2, human3, human4, mouse1, mouse2
     """
-    raw_dir = os.path.join(PROJECT_ROOT, "data", "GSE84133_RAW")
+    raw_dir = os.path.join(REPO_ROOT, "data", "GSE84133_RAW")
     pattern = f"GSM*_{donor}_umifm_counts.csv"
     candidates = [f for f in os.listdir(raw_dir) if donor in f and f.endswith(".csv")]
 
@@ -649,7 +650,7 @@ def print_header():
 
 
 def menu_data():
-    gse84133_exists = os.path.isdir(os.path.join(PROJECT_ROOT, "data", "GSE84133_RAW"))
+    gse84133_exists = os.path.isdir(os.path.join(REPO_ROOT, "data", "GSE84133_RAW"))
 
     print(SEPARATOR)
     print("  SELECT DATA SOURCE")

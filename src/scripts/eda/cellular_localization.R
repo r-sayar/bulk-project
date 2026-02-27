@@ -9,11 +9,12 @@ get_project_root <- function() {
     file_arg <- grep("^--file=", args, value = TRUE)
     if (length(file_arg) > 0) script_dir <- dirname(sub("^--file=", "", file_arg))
   }
-  if (is.null(script_dir)) script_dir <- "scripts/eda"
-  normalizePath(file.path(script_dir, "..", ".."), mustWork = FALSE)
+  if (is.null(script_dir)) script_dir <- "src/scripts/eda"
+  normalizePath(file.path(script_dir, "..", "..", ".."), mustWork = FALSE)
 }
-project_root <- get_project_root()
-setwd(project_root)
+repo_root <- get_project_root()
+src_root <- file.path(repo_root, "src")
+setwd(repo_root)
 
 # Install required packages if not available
 if (!requireNamespace("BiocManager", quietly = TRUE)) {
@@ -125,7 +126,7 @@ expr_by_loc <- aggregate(expression ~ primary_localization,
 print(expr_by_loc)
 
 # Create visualizations
-pdf("figures/cellular_localization_analysis.pdf", width = 12, height = 10)
+pdf(file.path(src_root, "figures/cellular_localization_analysis.pdf"), width = 12, height = 10)
 
 # Plot 1: Bar chart of gene counts by localization
 par(mar = c(10, 5, 4, 2))
@@ -177,7 +178,7 @@ if (nrow(top_genes_per_comp) > 0) {
 dev.off()
 
 # Save results to CSV
-write.csv(gene_compartments, "results/genes_by_localization.csv", row.names = FALSE)
+write.csv(gene_compartments, file.path(src_root, "results/genes_by_localization.csv"), row.names = FALSE)
 
 cat("\n=== Output Files ===\n")
 cat("1. cellular_localization_analysis.pdf - Visualizations\n")

@@ -19,15 +19,17 @@ sc.settings.verbosity = 3
 sc.settings.set_figure_params(dpi=100, facecolor='white', frameon=False)
 
 # Create output directories
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+SRC_ROOT = os.path.dirname(os.path.dirname(SCRIPT_DIR))
+REPO_ROOT = os.path.dirname(SRC_ROOT)
 
-os.makedirs(os.path.join(PROJECT_ROOT, 'figures'), exist_ok=True)
-os.makedirs(os.path.join(PROJECT_ROOT, 'processed_data'), exist_ok=True)
+os.makedirs(os.path.join(SRC_ROOT, 'figures'), exist_ok=True)
+os.makedirs(os.path.join(SRC_ROOT, 'processed_data'), exist_ok=True)
 
 
 def load_data(data_dir=None, species='human'):
     if data_dir is None:
-        data_dir = os.path.join(PROJECT_ROOT, 'data', 'GSE84133_RAW')
+        data_dir = os.path.join(REPO_ROOT, 'data', 'GSE84133_RAW')
     """
     Load and combine count matrices for specified species.
     
@@ -191,7 +193,7 @@ def plot_qc_metrics(adata, species, save=True):
     
     plt.tight_layout()
     if save:
-        plt.savefig(os.path.join(PROJECT_ROOT, f'figures/{species}_qc_violin.png'), dpi=150, bbox_inches='tight')
+        plt.savefig(os.path.join(SRC_ROOT, f'figures/{species}_qc_violin.png'), dpi=150, bbox_inches='tight')
         print(f"  Saved: figures/{species}_qc_violin.png")
     plt.close()
     
@@ -210,7 +212,7 @@ def plot_qc_metrics(adata, species, save=True):
     
     plt.tight_layout()
     if save:
-        plt.savefig(os.path.join(PROJECT_ROOT, f'figures/{species}_qc_scatter.png'), dpi=150, bbox_inches='tight')
+        plt.savefig(os.path.join(SRC_ROOT, f'figures/{species}_qc_scatter.png'), dpi=150, bbox_inches='tight')
         print(f"  Saved: figures/{species}_qc_scatter.png")
     plt.close()
     
@@ -232,7 +234,7 @@ def plot_qc_metrics(adata, species, save=True):
         
         plt.tight_layout()
         if save:
-            plt.savefig(os.path.join(PROJECT_ROOT, f'figures/{species}_qc_by_sample.png'), dpi=150, bbox_inches='tight')
+            plt.savefig(os.path.join(SRC_ROOT, f'figures/{species}_qc_by_sample.png'), dpi=150, bbox_inches='tight')
             print(f"  Saved: figures/{species}_qc_by_sample.png")
         plt.close()
 
@@ -381,7 +383,7 @@ def plot_results(adata, species, save=True):
     # PCA variance plot
     sc.pl.pca_variance_ratio(adata, n_pcs=30, show=False)
     if save:
-        plt.savefig(os.path.join(PROJECT_ROOT, f'figures/{species}_pca_variance.png'), dpi=150, bbox_inches='tight')
+        plt.savefig(os.path.join(SRC_ROOT, f'figures/{species}_pca_variance.png'), dpi=150, bbox_inches='tight')
         print(f"  Saved: figures/{species}_pca_variance.png")
     plt.close()
     
@@ -392,7 +394,7 @@ def plot_results(adata, species, save=True):
                title='UMAP - Leiden Clusters')
     plt.tight_layout()
     if save:
-        plt.savefig(os.path.join(PROJECT_ROOT, f'figures/{species}_umap_clusters.png'), dpi=150, bbox_inches='tight')
+        plt.savefig(os.path.join(SRC_ROOT, f'figures/{species}_umap_clusters.png'), dpi=150, bbox_inches='tight')
         print(f"  Saved: figures/{species}_umap_clusters.png")
     plt.close()
     
@@ -403,7 +405,7 @@ def plot_results(adata, species, save=True):
                    title='UMAP - Samples')
         plt.tight_layout()
         if save:
-            plt.savefig(os.path.join(PROJECT_ROOT, f'figures/{species}_umap_samples.png'), dpi=150, bbox_inches='tight')
+            plt.savefig(os.path.join(SRC_ROOT, f'figures/{species}_umap_samples.png'), dpi=150, bbox_inches='tight')
             print(f"  Saved: figures/{species}_umap_samples.png")
         plt.close()
     
@@ -414,14 +416,14 @@ def plot_results(adata, species, save=True):
                    title='UMAP - Original Cell Type Annotations')
         plt.tight_layout()
         if save:
-            plt.savefig(os.path.join(PROJECT_ROOT, f'figures/{species}_umap_celltypes.png'), dpi=150, bbox_inches='tight')
+            plt.savefig(os.path.join(SRC_ROOT, f'figures/{species}_umap_celltypes.png'), dpi=150, bbox_inches='tight')
             print(f"  Saved: figures/{species}_umap_celltypes.png")
         plt.close()
     
     # Highly variable genes plot
     sc.pl.highly_variable_genes(adata, show=False)
     if save:
-        plt.savefig(os.path.join(PROJECT_ROOT, f'figures/{species}_hvg.png'), dpi=150, bbox_inches='tight')
+        plt.savefig(os.path.join(SRC_ROOT, f'figures/{species}_hvg.png'), dpi=150, bbox_inches='tight')
         print(f"  Saved: figures/{species}_hvg.png")
     plt.close()
     
@@ -454,7 +456,7 @@ def plot_results(adata, species, save=True):
     
     plt.tight_layout()
     if save:
-        plt.savefig(os.path.join(PROJECT_ROOT, f'figures/{species}_summary.png'), dpi=150, bbox_inches='tight')
+        plt.savefig(os.path.join(SRC_ROOT, f'figures/{species}_summary.png'), dpi=150, bbox_inches='tight')
         print(f"  Saved: figures/{species}_summary.png")
     plt.close()
 
@@ -473,7 +475,7 @@ def find_marker_genes(adata, species, save=True):
     sc.pl.rank_genes_groups(adata, n_genes=10, ax=ax, show=False)
     plt.tight_layout()
     if save:
-        plt.savefig(os.path.join(PROJECT_ROOT, f'figures/{species}_markers.png'), dpi=150, bbox_inches='tight')
+        plt.savefig(os.path.join(SRC_ROOT, f'figures/{species}_markers.png'), dpi=150, bbox_inches='tight')
         print(f"  Saved: figures/{species}_markers.png")
     plt.close()
     
@@ -490,7 +492,7 @@ def find_marker_genes(adata, species, save=True):
                       ax=ax, show=False)
         plt.tight_layout()
         if save:
-            plt.savefig(os.path.join(PROJECT_ROOT, f'figures/{species}_marker_dotplot.png'), dpi=150, bbox_inches='tight')
+            plt.savefig(os.path.join(SRC_ROOT, f'figures/{species}_marker_dotplot.png'), dpi=150, bbox_inches='tight')
             print(f"  Saved: figures/{species}_marker_dotplot.png")
         plt.close()
     
@@ -550,7 +552,7 @@ def main():
     
     # Save processed data
     print(f"\nSaving processed human data...")
-    adata_human.write(os.path.join(PROJECT_ROOT, 'processed_data/human_processed.h5ad'))
+    adata_human.write(os.path.join(SRC_ROOT, 'processed_data/human_processed.h5ad'))
     print(f"  Saved: processed_data/human_processed.h5ad")
     
     # Process mouse data
@@ -591,7 +593,7 @@ def main():
     
     # Save processed data
     print(f"\nSaving processed mouse data...")
-    adata_mouse.write(os.path.join(PROJECT_ROOT, 'processed_data/mouse_processed.h5ad'))
+    adata_mouse.write(os.path.join(SRC_ROOT, 'processed_data/mouse_processed.h5ad'))
     print(f"  Saved: processed_data/mouse_processed.h5ad")
     
     print("\n\n" + "="*60)

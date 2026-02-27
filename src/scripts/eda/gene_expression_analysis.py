@@ -8,7 +8,9 @@ import pandas as pd
 import numpy as np
 import os
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+SRC_ROOT = os.path.dirname(os.path.dirname(SCRIPT_DIR))
+REPO_ROOT = os.path.dirname(SRC_ROOT)
 
 # Load the data
 print("=" * 60)
@@ -16,7 +18,7 @@ print("GENE EXPRESSION ANALYSIS - GSE50244")
 print("=" * 60)
 
 df = pd.read_csv(
-    os.path.join(PROJECT_ROOT, "data/GSE50244_Genes_counts_TMM_NormLength_atLeastMAF5_expressed_coord_noChrPrefix.txt"),
+    os.path.join(REPO_ROOT, "data/GSE50244_Genes_counts_TMM_NormLength_atLeastMAF5_expressed_coord_noChrPrefix.txt"),
     sep="\t"
 )
 
@@ -137,7 +139,7 @@ print(f"\n8. SAVING RESULTS")
 print("-" * 40)
 df_results = df[['geneid', 'chrm_probe', 's1', 's2', 'log2FC', 'mean_expr']].copy()
 df_results = df_results.sort_values('log2FC', key=abs, ascending=False)
-df_results.to_csv(os.path.join(PROJECT_ROOT, 'results/gene_expression_results.csv'), index=False)
+df_results.to_csv(os.path.join(SRC_ROOT, 'results/gene_expression_results.csv'), index=False)
 print(f"Saved differential expression results to: results/gene_expression_results.csv")
 
 print(f"\n" + "=" * 60)

@@ -1,3 +1,3 @@
-[submodule "CDState"]
-	path = CDState
+[submodule "src/CDState"]
+	path = src/CDState
 	url = https://github.com/BoevaLab/CDState.git
