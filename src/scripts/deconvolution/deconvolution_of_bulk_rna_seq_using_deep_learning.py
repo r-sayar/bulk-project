@@ -61,6 +61,53 @@ def pearson_corr_flat(a, b):
     return float(np.corrcoef(a, b)[0, 1])
 
 
+def mae(a, b):
+    return float(np.mean(np.abs(a - b)))
+
+
+def concordance_corr_coef(y_true, y_pred):
+    """Lin's concordance correlation coefficient (agreement, not just correlation)."""
+    y_true, y_pred = y_true.ravel(), y_pred.ravel()
+    mean_t, mean_p = y_true.mean(), y_pred.mean()
+    var_t, var_p = y_true.var(), y_pred.var()
+    cov = np.mean((y_true - mean_t) * (y_pred - mean_p))
+    denom = var_t + var_p + (mean_t - mean_p) ** 2
+    return float(2 * cov / denom) if denom > 0 else 0.0
+
+
+def compute_all_metrics(P_pred, P_true, K, cell_type_names=None):
+    """Compute global and per-cell-type evaluation metrics.
+
+    Returns dict with keys: RMSE, MAE, Pearson, CCC (global)
+    and per_celltype list of dicts.
+    """
+    from scipy.stats import spearmanr
+
+    global_metrics = {
+        "RMSE": rmse(P_pred, P_true),
+        "MAE": mae(P_pred, P_true),
+        "Pearson": pearson_corr_flat(P_pred, P_true),
+        "CCC": concordance_corr_coef(P_pred, P_true),
+    }
+    sr, _ = spearmanr(P_pred.ravel(), P_true.ravel())
+    global_metrics["Spearman"] = float(sr) if not np.isnan(sr) else 0.0
+
+    per_ct = []
+    for k in range(K):
+        name = cell_type_names[k] if cell_type_names is not None else f"C{k}"
+        pred_k, true_k = P_pred[:, k], P_true[:, k]
+        per_ct.append({
+            "cell_type": name,
+            "RMSE": rmse(pred_k, true_k),
+            "MAE": mae(pred_k, true_k),
+            "Pearson": pearson_corr_flat(pred_k, true_k),
+            "CCC": concordance_corr_coef(pred_k, true_k),
+            "bias": float(np.mean(pred_k - true_k)),
+        })
+    global_metrics["per_celltype"] = per_ct
+    return global_metrics
+
+
 def _download(url, out_path):
     if os.path.exists(out_path) and os.path.getsize(out_path) > 0:
         print(f"  Found existing: {out_path}")
@@ -545,27 +592,42 @@ def select_deconv_genes(B, genes_f, n_genes=2000):
 
 
 # ═══════════════════════════════════════════════════════════════════════
+# DECONVOLUTION HELPERS
+# ═══════════════════════════════════════════════════════════════════════
+
+def _print_metrics(method_name, metrics):
+    """Print global and per-cell-type metrics for a deconvolution method."""
+    print(f"  RMSE={metrics['RMSE']:.4f}  MAE={metrics['MAE']:.4f}  "
+          f"r={metrics['Pearson']:.4f}  rho={metrics['Spearman']:.4f}  "
+          f"CCC={metrics['CCC']:.4f}")
+    print(f"\n  Per-cell-type breakdown:")
+    for ct in metrics["per_celltype"]:
+        print(f"    {ct['cell_type']:>20s}  RMSE={ct['RMSE']:.4f}  "
+              f"MAE={ct['MAE']:.4f}  r={ct['Pearson']:.4f}  "
+              f"CCC={ct['CCC']:.4f}  bias={ct['bias']:+.4f}")
+
+
+# ═══════════════════════════════════════════════════════════════════════
 # DECONVOLUTION: NNLS (Reference-based)
 # ═══════════════════════════════════════════════════════════════════════
 
-def run_nnls(S, B, P_true):
-    """Solve min ||Sp - b|| s.t. p >= 0 for each bulk sample, then normalize."""
+def run_nnls(S, B_test, P_test, K, cell_type_names=None):
+    """Solve min ||Sp - b|| s.t. p >= 0 for each bulk sample, then normalize.
+
+    NNLS is a direct solver (no training phase), so it only needs the test set.
+    """
     print("\n── NNLS (Reference-based) ─────────────────────")
-    K = S.shape[1]
-    n_samples = B.shape[1]
+    n_samples = B_test.shape[1]
     P_pred = np.zeros((n_samples, K), dtype=np.float32)
 
     for i in range(n_samples):
-        p, _ = nnls(S, B[:, i])
+        p, _ = nnls(S, B_test[:, i])
         if p.sum() > 0:
             p = p / p.sum()
         P_pred[i, :] = p.astype(np.float32)
 
-    metrics = {
-        "RMSE": rmse(P_pred, P_true),
-        "Pearson(flat)": pearson_corr_flat(P_pred, P_true),
-    }
-    print(f"  RMSE = {metrics['RMSE']:.4f}, Pearson r = {metrics['Pearson(flat)']:.4f}")
+    metrics = compute_all_metrics(P_pred, P_test, K, cell_type_names)
+    _print_metrics("NNLS", metrics)
     return P_pred, metrics
 
 
@@ -588,33 +650,47 @@ def _match_components(P_pred, P_true):
     return P_pred[:, col_ind], corr, col_ind
 
 
-def run_nmf(B, K, P_true, seed=42):
-    """Non-negative Matrix Factorization on bulk data (reference-free)."""
+def run_nmf(B_train, B_test, P_train, P_test, K, cell_type_names=None, seed=42):
+    """Non-negative Matrix Factorization on bulk data (reference-free).
+
+    Fits on B_train, learns component mapping from P_train (Hungarian),
+    then transforms B_test and evaluates against P_test.
+    """
     print("\n── NMF (Reference-free) ───────────────────────")
     model = NMF(n_components=K, init="nndsvda", random_state=seed, max_iter=2000)
-    W = model.fit_transform(B.T)
-    W = np.maximum(W, 0)
-    row_sums = W.sum(axis=1, keepdims=True)
+
+    W_train = model.fit_transform(B_train.T)
+    W_train = np.maximum(W_train, 0)
+    row_sums = W_train.sum(axis=1, keepdims=True)
     row_sums[row_sums == 0] = 1.0
-    P_raw = W / row_sums
+    P_train_raw = W_train / row_sums
 
-    P_matched, corr_mat, mapping = _match_components(P_raw, P_true)
+    _, _, mapping = _match_components(P_train_raw, P_train)
+    print(f"  Component mapping (learned on train): {mapping}")
 
-    metrics = {
-        "RMSE": rmse(P_matched, P_true),
-        "Pearson(flat)": pearson_corr_flat(P_matched, P_true),
-    }
-    print(f"  Component mapping: {mapping}")
-    print(f"  RMSE = {metrics['RMSE']:.4f}, Pearson r = {metrics['Pearson(flat)']:.4f}")
-    return P_matched, metrics, corr_mat
+    W_test = model.transform(B_test.T)
+    W_test = np.maximum(W_test, 0)
+    row_sums = W_test.sum(axis=1, keepdims=True)
+    row_sums[row_sums == 0] = 1.0
+    P_test_raw = W_test / row_sums
+    P_pred = P_test_raw[:, mapping]
+
+    metrics = compute_all_metrics(P_pred, P_test, K, cell_type_names)
+    _print_metrics("NMF", metrics)
+    return P_pred, metrics
 
 
 # ═══════════════════════════════════════════════════════════════════════
 # DECONVOLUTION: NEURAL W-CLS v3 (Deep Learning)
 # ═══════════════════════════════════════════════════════════════════════
 
-def run_neural_wcls(S, B, P_true, K, epochs=500, patience=40):
-    """Train a neural weighted constrained least-squares model."""
+def run_neural_wcls(S, B_train, P_train, B_test, P_test, K,
+                    cell_type_names=None, epochs=500, patience=40):
+    """Train a neural weighted constrained least-squares model.
+
+    Trains on (B_train, P_train) with an internal 85/15 train/val sub-split,
+    then evaluates on the shared (B_test, P_test) held-out set.
+    """
     import torch
     import torch.nn as nn
     import torch.nn.functional as F
@@ -679,21 +755,21 @@ def run_neural_wcls(S, B, P_true, K, epochs=500, patience=40):
             y_true * (torch.log(y_true + eps) - torch.log(y_pred + eps)), dim=1
         ).mean()
 
-    # --- Data prep ---
-    X_data = B.T.astype(np.float32)
-    Y_data = P_true.astype(np.float32)
+    # --- Data prep: sub-split training data into train/val ---
+    X_train_all = B_train.T.astype(np.float32)
+    Y_train_all = P_train.astype(np.float32)
 
-    idx_all = np.arange(X_data.shape[0])
-    idx_tr, idx_te = train_test_split(idx_all, test_size=0.20, random_state=42)
-    idx_tr, idx_val = train_test_split(idx_tr, test_size=0.15, random_state=42)
+    idx_all = np.arange(X_train_all.shape[0])
+    idx_tr, idx_val = train_test_split(idx_all, test_size=0.15, random_state=42)
 
-    print(f"  Train: {len(idx_tr)}, Val: {len(idx_val)}, Test: {len(idx_te)}")
+    print(f"  Train: {len(idx_tr)}, Val: {len(idx_val)}, "
+          f"Test (shared): {P_test.shape[0]}")
 
-    X_tr_t = torch.from_numpy(X_data[idx_tr]).to(device)
-    Y_tr_t = torch.from_numpy(Y_data[idx_tr]).to(device)
-    X_val_t = torch.from_numpy(X_data[idx_val]).to(device)
-    Y_val_t = torch.from_numpy(Y_data[idx_val]).to(device)
-    X_te_t = torch.from_numpy(X_data[idx_te]).to(device)
+    X_tr_t = torch.from_numpy(X_train_all[idx_tr]).to(device)
+    Y_tr_t = torch.from_numpy(Y_train_all[idx_tr]).to(device)
+    X_val_t = torch.from_numpy(X_train_all[idx_val]).to(device)
+    Y_val_t = torch.from_numpy(Y_train_all[idx_val]).to(device)
+    X_te_t = torch.from_numpy(B_test.T.astype(np.float32)).to(device)
 
     loader = DataLoader(TensorDataset(X_tr_t, Y_tr_t), batch_size=64,
                         shuffle=True, drop_last=False)
@@ -755,26 +831,15 @@ def run_neural_wcls(S, B, P_true, K, epochs=500, patience=40):
         model.load_state_dict({k: v.to(device) for k, v in best_state.items()})
         print(f"  Restored best model (val MSE = {best_val_loss:.5f})")
 
-    # --- Evaluate ---
+    # --- Evaluate on shared test set ---
     model.eval()
     with torch.no_grad():
         P_te, _, _, _ = model(X_te_t)
-    P_te = P_te.cpu().numpy()
-    Y_te = Y_data[idx_te]
+    P_pred = P_te.cpu().numpy()
 
-    metrics = {
-        "RMSE": rmse(P_te, Y_te),
-        "Pearson(flat)": pearson_corr_flat(P_te, Y_te),
-    }
-    print(f"  RMSE = {metrics['RMSE']:.4f}, Pearson r = {metrics['Pearson(flat)']:.4f}")
-
-    print("\n  Prediction stats per cell type:")
-    for k in range(K):
-        vals = P_te[:, k]
-        print(f"    C{k}: mean={vals.mean():.3f}, std={vals.std():.3f}, "
-              f"min={vals.min():.3f}, max={vals.max():.3f}")
-
-    return P_te, Y_te, metrics
+    metrics = compute_all_metrics(P_pred, P_test, K, cell_type_names)
+    _print_metrics("Neural W-CLS v3", metrics)
+    return P_pred, metrics
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -802,18 +867,22 @@ def plot_bars(P_pred, P_true, K, method_name, ax=None):
 
 def plot_comparison_table(all_metrics):
     """Print a comparison table of all methods."""
-    print("\n╔══════════════════════════════════════════════════╗")
-    print("║             METHOD COMPARISON                    ║")
-    print("╠══════════════════════════════════════════════════╣")
+    w = 72
+    print(f"\n╔{'═' * w}╗")
+    print(f"║{'METHOD COMPARISON':^{w}}║")
+    print(f"╠{'═' * w}╣")
+    header = (f"║  {'Method':<18s} {'RMSE':>7s}  {'MAE':>7s}  "
+              f"{'r':>7s}  {'rho':>7s}  {'CCC':>7s}")
+    print(f"{header:<{w + 1}}║")
+    print(f"╠{'─' * w}╣")
     for name, m in all_metrics.items():
-        r_str = f"{m['RMSE']:.4f}"
-        p_str = f"{m['Pearson(flat)']:.4f}"
-        line = f"║  {name:<20s} RMSE={r_str}  r={p_str}"
-        print(f"{line:<50s}║")
-    print("╚══════════════════════════════════════════════════╝")
+        line = (f"║  {name:<18s} {m['RMSE']:7.4f}  {m['MAE']:7.4f}  "
+                f"{m['Pearson']:7.4f}  {m['Spearman']:7.4f}  {m['CCC']:7.4f}")
+        print(f"{line:<{w + 1}}║")
+    print(f"╚{'═' * w}╝")
 
 
-def plot_all_results(results, P_true, K):
+def plot_all_results(results, P_test, K, cell_type_names=None):
     """Create a grid of scatter + bar plots for all methods."""
     n_methods = len(results)
     fig, axes = plt.subplots(2, n_methods, figsize=(5 * n_methods, 9))
@@ -827,7 +896,9 @@ def plot_all_results(results, P_true, K):
         ax.set_xlabel("True proportion")
         ax.set_ylabel("Predicted proportion")
         r = pearson_corr_flat(P_pred, P_true_used)
-        ax.set_title(f"{name}\n(r={r:.3f}, RMSE={rmse(P_pred, P_true_used):.4f})")
+        ccc = concordance_corr_coef(P_pred, P_true_used)
+        ax.set_title(f"{name}\n(r={r:.3f}, CCC={ccc:.3f}, "
+                     f"RMSE={rmse(P_pred, P_true_used):.4f})")
         plot_bars(P_pred, P_true_used, K, name, ax=axes[1, col])
 
     plt.tight_layout()
@@ -1045,6 +1116,25 @@ def main():
     S = S_full[top_genes, :]
     print(f"  Selected {len(top_genes)} genes for deconvolution")
 
+    # ── Common train/test split (fair comparison across methods) ──
+    print(f"\n{'═' * 56}")
+    print("  TRAIN / TEST SPLIT")
+    print(f"{'═' * 56}")
+
+    idx_all = np.arange(P_true.shape[0])
+    idx_train, idx_test = train_test_split(
+        idx_all, test_size=0.20, random_state=42
+    )
+    B_train, B_test = B[:, idx_train], B[:, idx_test]
+    P_train, P_test = P_true[idx_train], P_true[idx_test]
+    print(f"  Train samples: {len(idx_train)}, Test samples: {len(idx_test)}")
+    print(f"  All methods evaluated on the SAME {len(idx_test)} test samples")
+
+    # Resolve cell-type names for reporting
+    ct_names = None
+    if cell_labels is not None:
+        ct_names = list(np.unique(cell_labels))
+
     # ── Run selected models ──
     print(f"\n{'═' * 56}")
     print("  RUNNING DECONVOLUTION")
@@ -1054,19 +1144,23 @@ def main():
     results = {}
 
     if "nnls" in run_models:
-        P_nnls, m_nnls = run_nnls(S, B, P_true)
+        P_nnls, m_nnls = run_nnls(S, B_test, P_test, K, ct_names)
         all_metrics["NNLS"] = m_nnls
-        results["NNLS"] = (P_nnls, P_true)
+        results["NNLS"] = (P_nnls, P_test)
 
     if "nmf" in run_models:
-        P_nmf, m_nmf, _ = run_nmf(B, K, P_true)
+        P_nmf, m_nmf = run_nmf(
+            B_train, B_test, P_train, P_test, K, ct_names
+        )
         all_metrics["NMF"] = m_nmf
-        results["NMF"] = (P_nmf, P_true)
+        results["NMF"] = (P_nmf, P_test)
 
     if "neural" in run_models:
-        P_neural, Y_te, m_neural = run_neural_wcls(S, B, P_true, K)
+        P_neural, m_neural = run_neural_wcls(
+            S, B_train, P_train, B_test, P_test, K, ct_names
+        )
         all_metrics["Neural W-CLS v3"] = m_neural
-        results["Neural W-CLS v3"] = (P_neural, Y_te)
+        results["Neural W-CLS v3"] = (P_neural, P_test)
 
     # ── Results ──
     print(f"\n{'═' * 56}")
@@ -1074,8 +1168,40 @@ def main():
     print(f"{'═' * 56}")
 
     plot_comparison_table(all_metrics)
-    plot_all_results(results, P_true, K)
+    plot_all_results(results, P_test, K, ct_names)
 
+    # ── Save artifacts ──
+    eval_dir = os.path.join(SRC_ROOT, "results", "deconvolution_evaluation")
+    os.makedirs(eval_dir, exist_ok=True)
+
+    save_data = {"P_test": P_test, "idx_test": idx_test}
+    if ct_names is not None:
+        save_data["cell_type_names"] = np.array(ct_names)
+    for name, (P_pred, _) in results.items():
+        key = name.replace(" ", "_").replace("-", "_")
+        save_data[f"P_pred_{key}"] = P_pred
+    np.savez(os.path.join(eval_dir, "predictions.npz"), **save_data)
+
+    rows = []
+    for name, m in all_metrics.items():
+        rows.append({
+            "method": name, "RMSE": m["RMSE"], "MAE": m["MAE"],
+            "Pearson": m["Pearson"], "Spearman": m["Spearman"], "CCC": m["CCC"],
+        })
+    pd.DataFrame(rows).to_csv(
+        os.path.join(eval_dir, "metrics_summary.csv"), index=False
+    )
+
+    ct_rows = []
+    for name, m in all_metrics.items():
+        for ct in m["per_celltype"]:
+            ct_rows.append({"method": name, **ct})
+    pd.DataFrame(ct_rows).to_csv(
+        os.path.join(eval_dir, "metrics_per_celltype.csv"), index=False
+    )
+
+    print(f"\n  Saved artifacts to {eval_dir}/")
+    print(f"    predictions.npz, metrics_summary.csv, metrics_per_celltype.csv")
     print("\nDone.")
 
 
