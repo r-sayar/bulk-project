@@ -4,7 +4,8 @@ Deconvolution of Bulk RNA-seq Using Deep Learning
 ==================================================
 
 Interactive script for bulk RNA-seq deconvolution with selectable:
-  - Data source (GEO download, local pancreatic islet data, or synthetic)
+  - Data source (GEO download, local pancreatic islet data, synthetic,
+    or any GEO accession by GSM/GSE ID)
   - Deconvolution method (NNLS, NMF, Neural W-CLS v3, or all three)
 
 Reference-based deconvolution solves: b ≈ S·p  (signature × proportions)
@@ -21,6 +22,7 @@ import os
 import sys
 import gzip
 import math
+import tarfile
 import textwrap
 import urllib.request
 import shutil
@@ -184,6 +186,207 @@ def build_synthetic_reference(n_genes=2000, K=10, n_cells_per_type=200, seed=42)
 
     print(f"  Built synthetic reference: {n_genes} genes × {n_cells} cells, K={K} types")
     return sp.csr_matrix(X_norm), gene_names, barcodes, labels
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# GEO ACCESSION DOWNLOAD
+# ═══════════════════════════════════════════════════════════════════════
+
+def load_geo_accession(accession):
+    """
+    Download and load scRNA-seq data from GEO by accession number.
+    Supports GSM (sample) and GSE (series) accessions.
+    Auto-detects 10x Matrix Market or tabular count matrix formats.
+
+    Returns (X_sparse, gene_names, barcodes, cell_labels_or_None).
+    """
+    accession = accession.strip()
+    acc_upper = accession.upper()
+    if not (acc_upper.startswith("GSM") or acc_upper.startswith("GSE")):
+        raise ValueError(f"Accession must start with GSM or GSE, got: {accession}")
+
+    data_dir = os.path.join(REPO_ROOT, "data", accession)
+    os.makedirs(data_dir, exist_ok=True)
+
+    _download_geo_supplementary(accession, data_dir)
+    return _detect_and_load_geo(data_dir, accession)
+
+
+def _download_geo_supplementary(accession, data_dir):
+    """Download supplementary files from GEO and extract if archived."""
+    existing = [f for f in os.listdir(data_dir)
+                if not f.startswith('.') and f != '.DS_Store']
+    if existing:
+        print(f"  Using cached data ({len(existing)} files in {accession}/)")
+        return
+
+    url = f"https://www.ncbi.nlm.nih.gov/geo/download/?acc={accession}&format=file"
+    print(f"  Downloading {accession} from GEO ...")
+
+    req = urllib.request.Request(url, headers={"User-Agent": "Python/bulk-deconv"})
+    with urllib.request.urlopen(req) as response:
+        content_disp = response.headers.get("Content-Disposition", "")
+        if "filename=" in content_disp:
+            fname = content_disp.split("filename=")[-1].strip("\"' ")
+        else:
+            fname = f"{accession}_RAW.tar"
+
+        out_path = os.path.join(data_dir, fname)
+        with open(out_path, "wb") as f:
+            shutil.copyfileobj(response, f)
+
+    size_mb = os.path.getsize(out_path) / 1e6
+    print(f"  Downloaded: {fname} ({size_mb:.1f} MB)")
+
+    try:
+        if tarfile.is_tarfile(out_path):
+            print(f"  Extracting archive ...")
+            with tarfile.open(out_path) as tf:
+                try:
+                    tf.extractall(data_dir, filter="data")
+                except TypeError:
+                    tf.extractall(data_dir)
+            n_new = len([f for f in os.listdir(data_dir) if f != fname])
+            print(f"  Extracted {n_new} file(s)")
+    except Exception as exc:
+        print(f"  Note: not a tar archive ({exc})")
+
+
+def _detect_and_load_geo(data_dir, accession):
+    """Walk *data_dir*, detect the file format, and load expression data."""
+    all_files = []
+    for root, _dirs, files in os.walk(data_dir):
+        for f in files:
+            if f.startswith(".") or f.endswith("_RAW.tar"):
+                continue
+            all_files.append(os.path.relpath(os.path.join(root, f), data_dir))
+
+    if not all_files:
+        raise FileNotFoundError(f"No data files found in {data_dir}")
+
+    print(f"\n  Files in {accession}/:")
+    for f in sorted(all_files):
+        size = os.path.getsize(os.path.join(data_dir, f))
+        unit, val = ("MB", size / 1e6) if size > 1e6 else ("KB", size / 1e3)
+        print(f"    {f}  ({val:.1f} {unit})")
+
+    # --- Strategy 1: 10x Matrix Market ---
+    mtx = [f for f in all_files if f.endswith((".mtx.gz", ".mtx"))]
+    feat = [f for f in all_files
+            if ("features" in f.lower() or "genes" in f.lower())
+            and f.endswith((".tsv.gz", ".tsv"))]
+    bcs = [f for f in all_files
+           if "barcodes" in f.lower() and f.endswith((".tsv.gz", ".tsv"))]
+
+    if mtx and feat and bcs:
+        return _load_10x_from_dir(data_dir, mtx[0], feat[0], bcs[0], accession)
+
+    # --- Strategy 2: tabular count matrix ---
+    tabular = [f for f in all_files
+               if f.endswith((".csv", ".csv.gz", ".tsv", ".tsv.gz",
+                              ".txt", ".txt.gz"))]
+    if tabular:
+        if len(tabular) > 1:
+            print("\n  Multiple tabular files found — select one:")
+            for i, t in enumerate(tabular, 1):
+                print(f"    [{i}] {t}")
+            while True:
+                pick = input(f"  Enter choice [1-{len(tabular)}]: ").strip()
+                if pick.isdigit() and 1 <= int(pick) <= len(tabular):
+                    chosen = tabular[int(pick) - 1]
+                    break
+                print("  Invalid choice.")
+        else:
+            chosen = tabular[0]
+        return _load_tabular_geo(os.path.join(data_dir, chosen), accession)
+
+    raise FileNotFoundError(
+        f"No supported format detected in {data_dir}.\n"
+        f"Files: {all_files}\n"
+        "Supported: 10x Matrix Market (.mtx.gz + features + barcodes), "
+        "tabular count matrices (.csv/.tsv/.txt, optionally gzipped)"
+    )
+
+
+def _load_10x_from_dir(data_dir, mtx_file, features_file, barcodes_file, accession):
+    """Load 10x Genomics Matrix Market files from *data_dir*."""
+    print(f"\n  Detected 10x Matrix Market format")
+
+    mtx_path = os.path.join(data_dir, mtx_file)
+    feat_path = os.path.join(data_dir, features_file)
+    bc_path = os.path.join(data_dir, barcodes_file)
+
+    if mtx_path.endswith(".gz"):
+        with gzip.open(mtx_path, "rb") as f:
+            X = sio.mmread(f).tocsr()
+    else:
+        X = sio.mmread(mtx_path).tocsr()
+
+    if feat_path.endswith(".gz"):
+        feat = read_tsv_gz(feat_path)
+    else:
+        feat = pd.read_csv(feat_path, sep="\t", header=None)
+    gene_names = feat.iloc[:, 1 if feat.shape[1] >= 2 else 0].astype(str).values
+
+    if bc_path.endswith(".gz"):
+        bc = read_tsv_gz(bc_path)
+    else:
+        bc = pd.read_csv(bc_path, sep="\t", header=None)
+    barcodes = bc.iloc[:, 0].astype(str).values
+
+    print(f"  Loaded {accession}: {X.shape[0]} genes × {X.shape[1]} cells")
+    return X, gene_names, barcodes, None
+
+
+def _load_tabular_geo(filepath, accession):
+    """Load a CSV / TSV / TXT count matrix downloaded from GEO."""
+    basename = os.path.basename(filepath)
+    print(f"\n  Loading tabular file: {basename}")
+
+    if filepath.endswith(".gz"):
+        with gzip.open(filepath, "rt") as fh:
+            first_line = fh.readline()
+    else:
+        with open(filepath, "r") as fh:
+            first_line = fh.readline()
+
+    sep = "\t" if "\t" in first_line else ","
+    compression = "gzip" if filepath.endswith(".gz") else None
+    df = pd.read_csv(filepath, sep=sep, index_col=0, compression=compression)
+
+    label_candidates = [
+        "assigned_cluster", "cell_type", "celltype", "cluster", "label",
+    ]
+    cell_labels = None
+    for candidate in label_candidates:
+        matches = [c for c in df.columns if c.lower() == candidate]
+        if matches:
+            cell_labels = df[matches[0]].values
+            break
+
+    meta_names = {
+        "assigned_cluster", "cell_type", "celltype", "cluster", "label",
+        "cell_id", "barcode", "well", "plate",
+    }
+    meta_cols = [c for c in df.columns if c.lower() in meta_names]
+    numeric_cols = [c for c in df.select_dtypes(include=[np.number]).columns
+                    if c not in meta_cols]
+
+    if df.shape[0] < df.shape[1] and numeric_cols:
+        print(f"  Layout: {df.shape[0]} cells × {len(numeric_cols)} genes (transposing)")
+        expr = df[numeric_cols].values.T.astype(np.float32)
+        gene_names = np.array(numeric_cols)
+        barcodes = np.array(df.index.astype(str))
+    else:
+        cols = numeric_cols if numeric_cols else list(df.columns)
+        expr = df[cols].values.astype(np.float32)
+        gene_names = np.array(df.index.astype(str))
+        barcodes = np.array(cols)
+        print(f"  Layout: {expr.shape[0]} genes × {expr.shape[1]} cells/samples")
+
+    X = sp.csr_matrix(expr)
+    print(f"  Loaded {accession}: {X.shape[0]} genes × {X.shape[1]} cells")
+    return X, gene_names, barcodes, cell_labels
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -668,14 +871,19 @@ def menu_data():
     print("  [3]  Synthetic — Generated reference (fast, no download)")
     print("       2000 genes, 5 cell types, 1000 cells")
     print()
+    print("  [4]  GEO Accession — Download any dataset by ID")
+    print("       (e.g., GSM4041647, GSE136148)")
+    print()
 
     while True:
-        choice = input("  Enter choice [1/2/3]: ").strip()
-        if choice in ("1", "2", "3"):
+        choice = input("  Enter choice [1/2/3/4]: ").strip()
+        if choice in ("1", "2", "3", "4"):
             break
         print("  Invalid choice, try again.")
 
     donor = None
+    geo_accession = None
+
     if choice == "2":
         if not gse84133_exists:
             print("  GSE84133 data not found. Falling back to synthetic.")
@@ -685,7 +893,13 @@ def menu_data():
             if not donor:
                 donor = "human1"
 
-    return choice, donor
+    elif choice == "4":
+        geo_accession = input("  Enter GEO accession (e.g., GSM4041647 or GSE136148): ").strip()
+        if not geo_accession:
+            print("  No accession entered. Falling back to synthetic.")
+            choice = "3"
+
+    return choice, donor, geo_accession
 
 
 def menu_model():
@@ -747,7 +961,7 @@ def main():
     print_header()
 
     # ── Menu ──
-    data_choice, donor = menu_data()
+    data_choice, donor, geo_accession = menu_data()
     model_choice = menu_model()
     params = menu_params()
 
@@ -779,6 +993,12 @@ def main():
         X_counts, gene_names, barcodes, cell_labels = build_synthetic_reference(
             n_genes=2000, K=K, n_cells_per_type=200, seed=42
         )
+
+    elif data_choice == "4":
+        X_counts, gene_names, barcodes, cell_labels = load_geo_accession(geo_accession)
+        if cell_labels is not None:
+            K = len(np.unique(cell_labels))
+            print(f"  Detected K={K} cell types from labels")
 
     # ── Preprocess ──
     print(f"\n{'═' * 56}")

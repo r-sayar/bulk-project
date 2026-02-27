@@ -20,6 +20,11 @@ data/GSE84133_RAW/*.csv
 # Downloaded 10x data (re-download via load_gsm8696075())
 data/gsm8696075_10x/
 
+# GEO downloads (re-download via load_geo_accession())
+data/GSM*/
+data/GSE*/
+!data/GSE84133_RAW/
+
 # IDE / editor
 .vscode/
 .idea/
