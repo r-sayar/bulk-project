@@ -67,7 +67,7 @@ COLORS_METHOD = {
     "Neural W-CLS v3": "#e7298a",
 }
 
-CT_CMAP = plt.cm.get_cmap("tab20")
+CT_CMAP = matplotlib.colormaps.get_cmap("tab20")
 
 
 def plot_scatter_grid(results, P_test, K, ct_names, out_dir):
