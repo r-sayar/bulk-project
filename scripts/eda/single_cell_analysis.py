@@ -9,7 +9,7 @@ import numpy as np
 import gzip
 import os
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 print("=" * 60)
 print("SINGLE CELL GENE EXPRESSION ANALYSIS")

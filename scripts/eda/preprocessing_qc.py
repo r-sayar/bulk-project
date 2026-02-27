@@ -19,7 +19,7 @@ sc.settings.verbosity = 3
 sc.settings.set_figure_params(dpi=100, facecolor='white', frameon=False)
 
 # Create output directories
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 os.makedirs(os.path.join(PROJECT_ROOT, 'figures'), exist_ok=True)
 os.makedirs(os.path.join(PROJECT_ROOT, 'processed_data'), exist_ok=True)

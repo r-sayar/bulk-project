@@ -17,8 +17,14 @@ processed_data/
 # Uncompressed raw data (use the .gz versions)
 data/GSE84133_RAW/*.csv
 
+# Downloaded 10x data (re-download via load_gsm8696075())
+data/gsm8696075_10x/
+
 # IDE / editor
 .vscode/
 .idea/
 *.swp
 *.swo
+
+
+results/

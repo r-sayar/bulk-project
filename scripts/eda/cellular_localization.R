@@ -9,8 +9,8 @@ get_project_root <- function() {
     file_arg <- grep("^--file=", args, value = TRUE)
     if (length(file_arg) > 0) script_dir <- dirname(sub("^--file=", "", file_arg))
   }
-  if (is.null(script_dir)) script_dir <- "scripts"
-  normalizePath(file.path(script_dir, ".."), mustWork = FALSE)
+  if (is.null(script_dir)) script_dir <- "scripts/eda"
+  normalizePath(file.path(script_dir, "..", ".."), mustWork = FALSE)
 }
 project_root <- get_project_root()
 setwd(project_root)

@@ -5,12 +5,16 @@ Deconvolution of bulk RNA-seq data into cell-type proportions using single-cell 
 ## Project Structure
 
 ```
-├── scripts/                 # Analysis pipelines
-│   ├── preprocessing_qc.py          # scRNA-seq preprocessing & QC
-│   ├── single_cell_analysis.py      # Per-cell gene expression analysis
-│   ├── gene_expression_analysis.py  # Bulk RNA-seq differential analysis
-│   ├── cellular_localization.R      # Gene localization via HPA
-│   └── simple_analysis.r            # Exploratory R analysis
+├── scripts/
+│   ├── eda/                          # Exploratory data analysis & preprocessing
+│   │   ├── preprocessing_qc.py              # scRNA-seq preprocessing & QC
+│   │   ├── single_cell_analysis.py          # Per-cell gene expression analysis
+│   │   ├── gene_expression_analysis.py      # Bulk RNA-seq differential analysis
+│   │   ├── cellular_localization.R          # Gene localization via HPA
+│   │   └── simple_analysis.r                # Exploratory R analysis (Seurat)
+│   └── deconvolution/                # Bulk-to-cell-type deconvolution
+│       ├── app_gradio.py                    # Gradio interactive demo (NNLS, NMF, Neural)
+│       └── deconvolution_of_bulk_rna_seq_using_deep_learning.py  # DL deconvolution (Colab export)
 ├── epic/                    # EPIC deconvolution (Python implementation)
 │   ├── epic.py                      # Constrained least-squares algorithm
 │   ├── reference_profiles.py        # Immune cell reference signatures
@@ -51,7 +55,7 @@ Raw data is included in `data/` and sourced from GEO:
 Processed `.h5ad` files are not tracked due to size (~1.3 GB). Regenerate them by running the preprocessing pipeline:
 
 ```bash
-python scripts/preprocessing_qc.py
+python scripts/eda/preprocessing_qc.py
 ```
 
 ## Usage
@@ -59,17 +63,25 @@ python scripts/preprocessing_qc.py
 Run the analysis scripts from the project root:
 
 ```bash
+# --- EDA & Preprocessing ---
 # 1. Preprocess scRNA-seq data and generate QC figures
-python scripts/preprocessing_qc.py
+python scripts/eda/preprocessing_qc.py
 
 # 2. Explore single-cell gene expression
-python scripts/single_cell_analysis.py
+python scripts/eda/single_cell_analysis.py
 
 # 3. Bulk RNA-seq analysis
-python scripts/gene_expression_analysis.py
+python scripts/eda/gene_expression_analysis.py
+
+# --- Deconvolution ---
+# 4. Launch Gradio deconvolution demo
+python scripts/deconvolution/app_gradio.py
 ```
 
 ## References
 
 - Racle et al. (2017). *Simultaneous enumeration of cancer and immune cell types from bulk tumor gene expression data.* eLife 6:e26476.
 - Kraft et al. (2025). *CDState: an unsupervised approach to predict malignant cell heterogeneity in tumor bulk RNA-sequencing data.* bioRxiv.
+
+
+Google Colab: https://colab.research.google.com/drive/1V1BXQlxys63JcG4VXos3VsgNbfZDC9Lj?usp=sharing#scrollTo=Rdf19nO2usJ3
