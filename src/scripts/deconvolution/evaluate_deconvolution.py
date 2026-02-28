@@ -49,10 +49,11 @@ from deconvolution_of_bulk_rna_seq_using_deep_learning import (
     rmse, mae, pearson_corr_flat, concordance_corr_coef,
     compute_all_metrics,
     load_gse84133, build_synthetic_reference,
-    preprocess, cluster_cells, build_signature_matrix,
+    cluster_cells, build_signature_matrix,
     simulate_bulks, select_deconv_genes,
     run_nnls, run_nmf, run_neural_wcls,
 )
+from preprocessing import preprocess
 from sklearn.model_selection import train_test_split
 from scipy.stats import spearmanr
 

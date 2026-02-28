@@ -1,3 +1,6 @@
+# Cache (preprocessing, etc.)
+.cache/
+
 # Virtual environment
 venv/
 .venv/

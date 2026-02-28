@@ -45,6 +45,8 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 SRC_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
 REPO_ROOT = os.path.abspath(os.path.join(SRC_ROOT, ".."))
 
+from preprocessing import preprocess, select_hvgs
+
 
 # ═══════════════════════════════════════════════════════════════════════
 # UTILITIES
@@ -437,51 +439,6 @@ def _load_tabular_geo(filepath, accession):
 
 
 # ═══════════════════════════════════════════════════════════════════════
-# PREPROCESSING
-# ═══════════════════════════════════════════════════════════════════════
-
-def preprocess(X, gene_names, min_genes_per_cell=200, min_cells_per_gene=3,
-               target_sum=1e4, max_cells=20000, seed=42):
-    """Filter cells/genes, normalize to CP10K, and create log1p copy."""
-    genes_per_cell = np.asarray((X > 0).sum(axis=0)).ravel()
-    cells_per_gene = np.asarray((X > 0).sum(axis=1)).ravel()
-
-    cell_mask = genes_per_cell >= min_genes_per_cell
-    gene_mask = cells_per_gene >= min_cells_per_gene
-
-    Xf = X[gene_mask][:, cell_mask].tocsr()
-    genes_f = gene_names[gene_mask]
-
-    print(f"  After filtering: {Xf.shape[0]} genes × {Xf.shape[1]} cells")
-
-    if Xf.shape[1] > max_cells:
-        rng = np.random.default_rng(seed)
-        keep = np.sort(rng.choice(Xf.shape[1], size=max_cells, replace=False))
-        Xf = Xf[:, keep]
-        print(f"  Subsampled to: {Xf.shape[0]} genes × {Xf.shape[1]} cells")
-
-    total = np.asarray(Xf.sum(axis=0)).ravel()
-    total[total == 0] = 1.0
-    scale = (target_sum / total).astype(np.float32)
-    X_norm = Xf.multiply(scale).tocsr().astype(np.float32)
-
-    X_log = X_norm.copy()
-    X_log.data = np.log1p(X_log.data)
-
-    return X_norm, X_log, genes_f, cell_mask, gene_mask
-
-
-def select_hvgs(X_log, n_top=2000):
-    """Select top highly-variable genes by variance/mean (dispersion)."""
-    mean = np.asarray(X_log.mean(axis=1)).ravel()
-    mean_sq = np.asarray(X_log.power(2).mean(axis=1)).ravel()
-    var = np.maximum(mean_sq - mean ** 2, 0)
-    top_idx = np.argsort(var)[-n_top:]
-    top_idx.sort()
-    return top_idx, var[top_idx]
-
-
-# ═══════════════════════════════════════════════════════════════════════
 # CLUSTERING & SIGNATURE MATRIX
 # ═══════════════════════════════════════════════════════════════════════
 
@@ -785,6 +742,9 @@ def run_neural_wcls(S, B_train, P_train, B_test, P_test, K,
     patience_counter = 0
     best_state = None
 
+    # Track metrics across epochs for plotting
+    history = {"epoch": [], "train_loss": [], "val_loss": [], "lr": []}
+
     for epoch in range(1, epochs + 1):
         model.train()
         losses = []
@@ -804,11 +764,18 @@ def run_neural_wcls(S, B_train, P_train, B_test, P_test, K,
             losses.append(loss.item())
 
         scheduler.step()
+        train_loss = float(np.mean(losses))
 
         model.eval()
         with torch.no_grad():
             p_val, _, _, _ = model(X_val_t)
             val_loss = mse_fn(p_val, Y_val_t).item()
+
+        lr_now = scheduler.get_last_lr()[0]
+        history["epoch"].append(epoch)
+        history["train_loss"].append(train_loss)
+        history["val_loss"].append(val_loss)
+        history["lr"].append(lr_now)
 
         if val_loss < best_val_loss - 1e-6:
             best_val_loss = val_loss
@@ -818,14 +785,31 @@ def run_neural_wcls(S, B_train, P_train, B_test, P_test, K,
             patience_counter += 1
 
         if epoch % 50 == 0 or epoch == 1:
-            lr_now = scheduler.get_last_lr()[0]
-            print(f"  Epoch {epoch:3d} | train={np.mean(losses):.5f} | "
+            print(f"  Epoch {epoch:3d} | train={train_loss:.5f} | "
                   f"val={val_loss:.5f} | lr={lr_now:.2e} | "
                   f"patience={patience_counter}/{patience}")
 
         if patience_counter >= patience:
             print(f"  Early stopping at epoch {epoch}")
             break
+
+    # Plot training curves
+    if history["epoch"]:
+        fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+        axes[0].plot(history["epoch"], history["train_loss"], label="Train loss")
+        axes[0].plot(history["epoch"], history["val_loss"], label="Val loss")
+        axes[0].set_xlabel("Epoch")
+        axes[0].set_ylabel("Loss (MSE)")
+        axes[0].set_title("Neural W-CLS: loss across epochs")
+        axes[0].legend()
+        axes[0].grid(True, alpha=0.3)
+        axes[1].plot(history["epoch"], history["lr"], color="green")
+        axes[1].set_xlabel("Epoch")
+        axes[1].set_ylabel("Learning rate")
+        axes[1].set_title("Learning rate schedule")
+        axes[1].grid(True, alpha=0.3)
+        plt.tight_layout()
+        plt.show()
 
     if best_state is not None:
         model.load_state_dict({k: v.to(device) for k, v in best_state.items()})
