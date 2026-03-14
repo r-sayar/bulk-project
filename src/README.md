@@ -89,4 +89,4 @@ python src/scripts/deconvolution/app_gradio.py
 - Kraft et al. (2025). *CDState: an unsupervised approach to predict malignant cell heterogeneity in tumor bulk RNA-sequencing data.* bioRxiv.
 
 
-Google Colab: https://colab.research.google.com/drive/1V1BXQlxys63JcG4VXos3VsgNbfZDC9Lj?usp=sharing#scrollTo=Rdf19nO2usJ3
+Google Colab: https://colab.research.google.com/drive/1ACIoz5w5gOuYqAElyzVQ6X3_eoWkcd1i?usp=sharing
