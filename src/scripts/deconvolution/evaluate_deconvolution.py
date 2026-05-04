@@ -165,6 +165,48 @@ def plot_ccc_heatmap(all_metrics, K, ct_names, out_dir):
     print(f"  Saved: {path}")
 
 
+def plot_method_comparison(all_metrics, out_dir):
+    """Scatter plot: Pearson r (x) vs RMSE (y) per method, with error bars."""
+    methods = list(all_metrics.keys())
+    colors = {
+        "NNLS": "#d95f02",
+        "NMF": "#7570b3",
+        "Neural W-CLS v3": "#e7298a",
+    }
+
+    fig, ax = plt.subplots(figsize=(7, 5.5))
+
+    for i, name in enumerate(methods):
+        m = all_metrics[name]
+        ct_pearsons = [ct["Pearson"] for ct in m["per_celltype"]]
+        ct_rmses = [ct["RMSE"] for ct in m["per_celltype"]]
+
+        mean_r = np.mean(ct_pearsons)
+        std_r = np.std(ct_pearsons)
+        mean_rmse = np.mean(ct_rmses)
+        std_rmse = np.std(ct_rmses)
+
+        color = colors.get(name, f"C{i}")
+        ax.errorbar(mean_r, mean_rmse, xerr=std_r, yerr=std_rmse,
+                    fmt="D", markersize=7, color=color, capsize=4,
+                    capthick=1.5, elinewidth=1.5, label=name)
+        ax.annotate(name, (mean_r, mean_rmse),
+                    textcoords="offset points", xytext=(8, 6),
+                    fontsize=9, color=color, fontweight="bold")
+
+    ax.set_xlabel("Pearson's correlation coefficient", fontsize=11)
+    ax.set_ylabel("Root Mean Squared Error", fontsize=11)
+    ax.set_title("Method Comparison: Pearson r vs RMSE\n(per-cell-type mean ± std)",
+                 fontsize=12)
+    ax.legend(fontsize=9, loc="best")
+    ax.grid(True, alpha=0.3)
+    fig.tight_layout()
+    path = os.path.join(out_dir, "method_comparison_pearson_rmse.png")
+    fig.savefig(path, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+    print(f"  Saved: {path}")
+
+
 def plot_bland_altman(results, P_test, out_dir):
     """Bland-Altman plots: (pred - true) vs (pred + true)/2 per method."""
     methods = list(results.keys())
@@ -426,6 +468,7 @@ def main():
     plot_per_celltype_bars(all_metrics, K, ct_names, out_dir)
     plot_ccc_heatmap(all_metrics, K, ct_names, out_dir)
     plot_bland_altman(results, P_test, out_dir)
+    plot_method_comparison(all_metrics, out_dir)
 
     print(f"\n  All outputs saved to: {out_dir}/")
     print("\nDone.")

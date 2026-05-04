@@ -849,6 +849,45 @@ def plot_bars(P_pred, P_true, K, method_name, ax=None):
     return ax
 
 
+def plot_method_comparison(all_metrics):
+    """Scatter plot: Pearson r (x) vs RMSE (y) per method, with error bars."""
+    methods = list(all_metrics.keys())
+    colors = {
+        "NNLS": "#d95f02",
+        "NMF": "#7570b3",
+        "Neural W-CLS v3": "#e7298a",
+    }
+
+    fig, ax = plt.subplots(figsize=(7, 5.5))
+
+    for i, name in enumerate(methods):
+        m = all_metrics[name]
+        ct_pearsons = [ct["Pearson"] for ct in m["per_celltype"]]
+        ct_rmses = [ct["RMSE"] for ct in m["per_celltype"]]
+
+        mean_r = np.mean(ct_pearsons)
+        std_r = np.std(ct_pearsons)
+        mean_rmse = np.mean(ct_rmses)
+        std_rmse = np.std(ct_rmses)
+
+        color = colors.get(name, f"C{i}")
+        ax.errorbar(mean_r, mean_rmse, xerr=std_r, yerr=std_rmse,
+                    fmt="D", markersize=7, color=color, capsize=4,
+                    capthick=1.5, elinewidth=1.5, label=name)
+        ax.annotate(name, (mean_r, mean_rmse),
+                    textcoords="offset points", xytext=(8, 6),
+                    fontsize=9, color=color, fontweight="bold")
+
+    ax.set_xlabel("Pearson's correlation coefficient", fontsize=11)
+    ax.set_ylabel("Root Mean Squared Error", fontsize=11)
+    ax.set_title("Method Comparison: Pearson r vs RMSE\n(per-cell-type mean ± std)",
+                 fontsize=12)
+    ax.legend(fontsize=9, loc="best")
+    ax.grid(True, alpha=0.3)
+    fig.tight_layout()
+    plt.show()
+
+
 def plot_comparison_table(all_metrics):
     """Print a comparison table of all methods."""
     w = 72
@@ -1153,6 +1192,7 @@ def main():
 
     plot_comparison_table(all_metrics)
     plot_all_results(results, P_test, K, ct_names)
+    plot_method_comparison(all_metrics)
 
     # ── Save artifacts ──
     eval_dir = os.path.join(SRC_ROOT, "results", "deconvolution_evaluation")

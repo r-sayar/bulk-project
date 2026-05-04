@@ -1,0 +1,276 @@
+# GTEx whole-blood — low-CV enrichment
+
+Source: GTEx v11 whole blood (803 donors).
+
+Filter: CPM > 1.0 in >= 10% of samples — 16,355 expressed genes.
+
+CV = std(CPM) / mean(CPM) on linear CPM (qPCR-style stability metric).
+
+
+## CV distribution (linear CPM)
+
+| quantile | CV |
+|---|---|
+| q=0.001 | 0.2248 |
+| q=0.005 | 0.2593 |
+| q=0.010 | 0.2768 |
+| q=0.050 | 0.3423 |
+| q=0.100 | 0.3867 |
+| q=0.250 | 0.4878 |
+| q=0.500 | 0.6453 |
+| q=0.900 | 1.3464 |
+
+
+## Bottom-200 lowest-CV genes (CV ≤ 0.2821)
+
+_Enrichr userListId: `127825736`_
+
+### GO_Biological_Process_2023 (top 15)
+
+| Term | p | adj-p | combined | overlap |
+|---|---|---|---|---|
+| RNA Splicing, Via Transesterification Reactions With Bulged Adenosine As Nucleophile (GO:0000377) | 3.94e-10 | 5.33e-07 | 208.9 | IK;RBM8A;GPKOW;CASC3;USP39;SMU1;RBM4;HNRNPK;SNW1;DDX39B;DHX1 |
+| mRNA Splicing, Via Spliceosome (GO:0000398) | 3.57e-09 | 1.95e-06 | 157.7 | IK;GPKOW;RBM8A;CASC3;USP39;SMU1;RBM4;HNRNPK;SNW1;DDX39B;DHX1 |
+| mRNA Processing (GO:0006397) | 4.33e-09 | 1.95e-06 | 153.8 | IK;GPKOW;RBM8A;CASC3;USP39;SMU1;RBM4;HNRNPK;SNW1;DDX39B;DHX1 |
+| Vesicle-Mediated Transport (GO:0016192) | 1.80e-07 | 6.08e-05 | 75.9 | ARF4;ARF1;RAB5C;GDI1;EXOC7;DENND1A;VPS4A;INPPL1;AP2A1;SNF8;A |
+| Intracellular Protein Transport (GO:0006886) | 1.03e-06 | 2.79e-04 | 70.3 | ARF4;ARF1;COPA;RAB5C;RANBP3;LAPTM5;KATNB1;AP2A1;SNF8;GGA3;HG |
+| Protein Localization (GO:0008104) | 2.67e-06 | 6.02e-04 | 60.3 | ARF4;ARF1;COPA;RAB5C;IST1;USP4;LAPTM5;AP2A1;WIPI2;WDR45;ATG1 |
+| Regulation Of mRNA Splicing, Via Spliceosome (GO:0048024) | 4.64e-06 | 8.96e-04 | 117.3 | SMU1;RBM4;FXR2;HNRNPK;SNW1;RBM8A;THRAP3;SAP18 |
+| Regulation Of Alternative mRNA Splicing, Via Spliceosome (GO:0000381) | 1.44e-05 | 2.44e-03 | 144.9 | SMU1;RBM4;FXR2;RBM8A;THRAP3;SAP18 |
+| Vesicle-Mediated Transport To The Plasma Membrane (GO:0098876) | 1.97e-05 | 2.96e-03 | 102.0 | GGA3;EXOC7;HGS;DENND1A;VTI1A;SNF8;RAB11B |
+| Membrane Fission (GO:0090148) | 3.65e-05 | 4.94e-03 | 156.9 | EXOC7;HGS;VPS4A;EXOC3;SNF8 |
+| Negative Regulation Of Macromolecule Biosynthetic Process (GO:0010558) | 5.77e-05 | 6.51e-03 | 76.7 | RBM4;GSK3A;FXR2;PCIF1;INPP5K;CNOT10;AP2A1 |
+| RNA Splicing (GO:0008380) | 5.77e-05 | 6.51e-03 | 76.7 | SMU1;PPP2CA;DDX39B;RBM8A;DHX16;HNRNPC;USP39 |
+| Macroautophagy (GO:0016236) | 8.43e-05 | 8.45e-03 | 69.1 | HGS;CALCOCO2;VPS4A;VTI1A;PLEKHM1;SNF8;WIPI2 |
+| Ubiquitin-Dependent Protein Catabolic Process (GO:0006511) | 8.74e-05 | 8.45e-03 | 35.7 | GSK3A;UBE2I;PPP1R11;UBE2D2;VPS4A;UBE2A;TRPC4AP;PSMA7;PSMD9;R |
+| RNA Processing (GO:0006396) | 9.71e-05 | 8.76e-03 | 49.1 | SMU1;PPP2CA;RBM4;HNRNPK;DDX39B;RBM8A;DHX16;HNRNPC;USP39 |
+
+### GO_Cellular_Component_2023 (top 15)
+
+| Term | p | adj-p | combined | overlap |
+|---|---|---|---|---|
+| Intracellular Membrane-Bounded Organelle (GO:0043231) | 1.39e-09 | 2.27e-07 | 49.3 | CALCOCO1;GSK3A;PPP1R11;CALCOCO2;DENND1A;UBE2D2;INPPL1;CASC3; |
+| Nucleus (GO:0005634) | 2.79e-09 | 2.27e-07 | 47.8 | CALCOCO1;GSK3A;PPP1R11;CALCOCO2;UBE2D2;INPPL1;CASC3;SMG7;USP |
+| U2-type Spliceosomal Complex (GO:0005684) | 3.34e-06 | 1.82e-04 | 126.3 | SMU1;IK;SNW1;RBM8A;DHX16;BUD13;CASC3;RBM22 |
+| Bounding Membrane Of Organelle (GO:0098588) | 2.55e-05 | 1.04e-03 | 31.2 | SLC35A2;ARF1;COPA;PGAP2;GPR108;VPS4A;ZDHHC5;AP2A1;SNF8;AP2B1 |
+| Clathrin-Coated Vesicle (GO:0030136) | 1.31e-04 | 4.27e-03 | 75.8 | DENND1A;VTI1A;AP2A1;AP2B1;AP2M1;SPG21 |
+| Endosome Membrane (GO:0010008) | 2.93e-04 | 7.95e-03 | 28.9 | APH1A;STARD3;RAB5C;GGA3;TMBIM1;VPS4A;VTI1A;AP2A1;SNF8;AP2B1; |
+| cullin-RING Ubiquitin Ligase Complex (GO:0031461) | 3.74e-04 | 8.70e-03 | 38.9 | TMEM183A;ANAPC16;CDC26;TRPC4AP;SKP1;FBXO42;WDTC1;DDA1 |
+| Protein Phosphatase Type 2A Complex (GO:0000159) | 5.01e-04 | 1.02e-02 | 176.1 | PPP2CA;PPP2R2D;PPP2R2A |
+| Endolysosome Membrane (GO:0036020) | 8.48e-04 | 1.38e-02 | 133.2 | AP2A1;AP2B1;AP2M1 |
+| Clathrin Adaptor Complex (GO:0030131) | 8.48e-04 | 1.38e-02 | 133.2 | AP2A1;AP2B1;AP2M1 |
+| Golgi Membrane (GO:0000139) | 1.28e-03 | 1.89e-02 | 19.9 | SLC35A2;CYTH2;ARF1;COPA;PGAP2;TBC1D20;LMAN2;VTI1A;ZDHHC5;PI4 |
+| Cytoplasmic Side Of Plasma Membrane (GO:0009898) | 1.56e-03 | 2.12e-02 | 33.3 | MAP2K2;EXOC7;HTRA2;AP2A1;AP2B1;AP2M1 |
+| Cytoplasmic Vesicle Membrane (GO:0030659) | 1.92e-03 | 2.41e-02 | 18.7 | APH1A;GGA3;TMBIM1;VPS4A;EXOC3;AP2A1;SNF8;AP2B1;SPPL3;AP2M1;D |
+| AP-2 Adaptor Complex (GO:0030122) | 2.68e-03 | 2.73e-02 | 197.4 | AP2B1;AP2M1 |
+| Clathrin Coat Of Endocytic Vesicle (GO:0030128) | 2.68e-03 | 2.73e-02 | 197.4 | AP2B1;AP2M1 |
+
+### GO_Molecular_Function_2023 (top 15)
+
+| Term | p | adj-p | combined | overlap |
+|---|---|---|---|---|
+| RNA Binding (GO:0003723) | 2.85e-05 | 6.92e-03 | 25.6 | ARF1;RBM8A;CASC3;SMG7;ADD1;RBM4;FXR2;SUMO2;EIF4H;DHX16;SAP18 |
+| Clathrin Adaptor Activity (GO:0035615) | 3.31e-04 | 4.02e-02 | 219.6 | AP2A1;AP2B1;AP2M1 |
+| 3-hydroxyacyl-CoA Dehydrogenase Activity (GO:0003857) | 9.75e-04 | 5.89e-02 | 462.1 | HADHB;HADHA |
+| Cadherin Binding (GO:0045296) | 1.45e-03 | 5.89e-02 | 21.7 | HNRNPK;CAPZB;IST1;EEF1D;EIF4H;EXOC3;YWHAZ;ADD1;RAB11B;SH3GL1 |
+| acetyl-CoA C-acyltransferase Activity (GO:0003988) | 1.45e-03 | 5.89e-02 | 326.6 | HADHB;HADHA |
+| Phosphatidylinositol Trisphosphate Phosphatase Activity (GO:0034594) | 1.45e-03 | 5.89e-02 | 326.6 | INPPL1;INPP5K |
+| Phosphatidylinositol-3,5-Bisphosphate Binding (GO:0080025) | 1.71e-03 | 5.92e-02 | 91.4 | MAPKAP1;WIPI2;WDR45 |
+| GTPase Binding (GO:0051020) | 1.97e-03 | 5.92e-02 | 23.4 | GGA3;TBC1D20;MAPKAP1;GNB1;BRK1;DVL3;ARHGEF2;RNF41 |
+| Phosphatidylinositol Bisphosphate Binding (GO:1902936) | 2.43e-03 | 5.92e-02 | 34.6 | EXOC7;FLII;MAPKAP1;WIPI2;WDR45 |
+| Ubiquitin-Like Protein Ligase Binding (GO:0044389) | 2.59e-03 | 5.92e-02 | 19.6 | PIAS4;SMAD2;HGS;UBE2D2;SUMO2;LAPTM5;UBE2A;CASC3;YWHAZ |
+| Phosphoserine Residue Binding (GO:0050815) | 2.68e-03 | 5.92e-02 | 197.4 | PCIF1;YWHAZ |
+| Protein Heterodimerization Activity (GO:0046982) | 3.07e-03 | 6.13e-02 | 22.5 | PPP2CA;FXR2;ARNT;KATNB1;USF2;ADD1;PAFAH1B1 |
+| pre-mRNA Binding (GO:0036002) | 3.28e-03 | 6.13e-02 | 63.8 | RBM4;HNRNPC;RBM22 |
+| Small GTPase Binding (GO:0031267) | 3.96e-03 | 6.80e-02 | 20.5 | GGA3;TBC1D20;MAPKAP1;DVL3;BRK1;ARHGEF2;RNF41 |
+| Inositol Trisphosphate Phosphatase Activity (GO:0046030) | 4.25e-03 | 6.80e-02 | 136.5 | INPPL1;INPP5K |
+
+### KEGG_2021_Human (top 15)
+
+| Term | p | adj-p | combined | overlap |
+|---|---|---|---|---|
+| Endocytosis | 1.03e-12 | 2.03e-10 | 258.7 | SMAD2;ARF4;ARF1;RAB5C;IST1;SH3KBP1;VPS4A;AP2A1;SNF8;AP2B1;RA |
+| Salmonella infection | 2.26e-07 | 2.22e-05 | 95.9 | ARF1;RAB5C;MAP2K2;EXOC7;DCTN3;BRK1;KLC1;DNM2;CYTH2;ACTR1A;AK |
+| mRNA surveillance pathway | 6.10e-07 | 4.00e-05 | 149.3 | PPP2CA;DDX39B;RBM8A;PPP2R2D;SAP18;ACIN1;PPP2R2A;CASC3;SMG7 |
+| Spliceosome | 2.06e-05 | 1.01e-03 | 70.9 | HNRNPK;SNW1;DDX39B;RBM8A;DHX16;ACIN1;HNRNPC;USP39;RBM22 |
+| Huntington disease | 6.27e-05 | 2.16e-03 | 41.0 | PSMD9;ACTR1A;ATP5F1B;DCTN3;AP2A1;AP2B1;WIPI2;NRF1;KLC1;ATG13 |
+| Renal cell carcinoma | 6.59e-05 | 2.16e-03 | 93.3 | MAP2K2;AKT2;TFE3;PRCC;ARAF;ARNT |
+| RNA transport | 1.10e-04 | 3.09e-03 | 47.6 | FXR2;UBE2I;DDX39B;RBM8A;SUMO2;EIF4EBP2;SAP18;ACIN1;CASC3 |
+| Dopaminergic synapse | 3.70e-04 | 9.11e-03 | 45.1 | PPP2CA;GSK3A;AKT2;GNB1;PPP2R2D;PPP2R2A;GNAI2 |
+| Apelin signaling pathway | 4.63e-04 | 9.12e-03 | 42.1 | SMAD2;MAP2K2;AKT2;GNB1;NRF1;PRKAB1;GNAI2 |
+| Insulin signaling pathway | 4.63e-04 | 9.12e-03 | 42.1 | MAP2K2;SHC1;EXOC7;AKT2;ARAF;INPPL1;PRKAB1 |
+| Chagas disease | 5.63e-04 | 1.01e-02 | 47.5 | SMAD2;PPP2CA;AKT2;PPP2R2D;PPP2R2A;GNAI2 |
+| Gastric cancer | 7.63e-04 | 1.25e-02 | 36.0 | SMAD2;RXRB;MAP2K2;SHC1;AKT2;ARAF;DVL3 |
+| Shigellosis | 8.56e-04 | 1.30e-02 | 27.5 | CYTH2;ARF1;GSK3A;CALCOCO2;AKT2;UBE2D2;ARHGEF2;WIPI2;SKP1 |
+| Hepatitis C | 1.04e-03 | 1.44e-02 | 32.6 | PPP2CA;MAP2K2;AKT2;PPP2R2D;ARAF;PPP2R2A;YWHAZ |
+| Synaptic vesicle cycle | 1.11e-03 | 1.44e-02 | 47.1 | AP2A1;AP2B1;ATP6V1E1;AP2M1;DNM2 |
+
+
+## Bottom-500 lowest-CV genes (CV ≤ 0.3170)
+
+_Enrichr userListId: `127825746`_
+
+### GO_Biological_Process_2023 (top 15)
+
+| Term | p | adj-p | combined | overlap |
+|---|---|---|---|---|
+| Ubiquitin-Dependent Protein Catabolic Process (GO:0006511) | 3.21e-17 | 7.84e-14 | 211.5 | VCP;GSK3A;UBXN1;PSMD11;PPP1R11;PSMD13;UBE2D2;ZFAND2B;UBE2D3; |
+| Intracellular Protein Transport (GO:0006886) | 7.56e-14 | 9.22e-11 | 155.8 | ARF4;ARF1;COPA;RAB5C;KATNB1;AP2A1;VPS26B;GGA3;AKT2;STX6;KPNA |
+| Proteasome-Mediated Ubiquitin-Dependent Protein Catabolic Process (GO:0043161) | 5.67e-12 | 4.61e-09 | 122.9 | VCP;GSK3A;UBXN1;PSMD11;ANAPC16;PSMD13;ZFAND2B;UBE2D3;ARRB2;P |
+| Proteasomal Protein Catabolic Process (GO:0010498) | 9.73e-12 | 5.93e-09 | 144.8 | VCP;GSK3A;UBXN1;PSMD11;PSMD13;ZFAND2B;UBE2D3;ARRB2;PSMA7;PSM |
+| RNA Splicing, Via Transesterification Reactions With Bulged Adenosine As Nucleophile (GO:0000377) | 2.40e-11 | 1.17e-08 | 152.9 | SF3B4;IK;SF3B2;PRPF38A;RBM8A;GPKOW;BUD31;DDX23;CASC3;USP39;E |
+| mRNA Splicing, Via Spliceosome (GO:0000398) | 1.24e-10 | 5.04e-08 | 124.7 | SF3B4;SF3B2;TSSC4;RBM8A;DDX23;CASC3;USP39;ESS2;RBM4;DHX16;RA |
+| Protein Transport (GO:0015031) | 3.48e-10 | 1.21e-07 | 94.4 | ARF4;ARF1;LRSAM1;COPA;SYS1;RAB5C;AP2A1;VPS26B;GGA3;STX6;STX5 |
+| mRNA Processing (GO:0006397) | 9.07e-10 | 2.77e-07 | 106.7 | SF3B4;SF3B2;IK;PRPF38A;RBM8A;GPKOW;BUD31;DDX23;CASC3;USP39;E |
+| Membrane Organization (GO:0061024) | 1.28e-09 | 3.47e-07 | 119.0 | TOR1A;DBNL;PDCD6IP;EXOC7;OSBPL2;VPS4A;AP3D1;SNF8;LEMD2;DNM2; |
+| Protein Localization (GO:0008104) | 5.27e-09 | 1.28e-06 | 72.7 | ARF4;ARF1;COPA;RAB5C;AP2A1;VPS26B;WDR45;GGA3;SUMO1;STX6;STX5 |
+| Macroautophagy (GO:0016236) | 6.43e-09 | 1.43e-06 | 137.5 | VCP;CALCOCO2;VPS4A;SNF8;WIPI2;ZFYVE1;CLN3;HGS;NBR1;VTI1A;PLE |
+| Vesicle-Mediated Transport (GO:0016192) | 1.55e-08 | 3.02e-06 | 62.0 | ARF4;ARF1;RAB5C;AP5Z1;GDI1;DENND1A;VPS4A;INPPL1;AP2A1;CDC42; |
+| Modification-Dependent Protein Catabolic Process (GO:0019941) | 1.61e-08 | 3.02e-06 | 88.9 | PSMD11;UBE2I;PPP1R11;ARRDC1;PSMD13;UBE2D2;UBE2D3;UBE4B;UBE2A |
+| Protein Ubiquitination (GO:0016567) | 1.82e-07 | 2.97e-05 | 48.6 | LRSAM1;VCP;ANAPC16;FBH1;UBE2D2;UBE2D3;ARRB2;DDA1;DCAF15;RNF1 |
+| Endoplasmic Reticulum To Golgi Vesicle-Mediated Transport (GO:0006888) | 1.83e-07 | 2.97e-05 | 93.1 | ARF4;COPA;SEC13;PEF1;NRBP1;ARCN1;TBC1D20;VAPB;LMAN2;VTI1A;ST |
+
+### GO_Cellular_Component_2023 (top 15)
+
+| Term | p | adj-p | combined | overlap |
+|---|---|---|---|---|
+| Intracellular Membrane-Bounded Organelle (GO:0043231) | 2.87e-23 | 7.18e-21 | 131.2 | SLC35B1;DCAF8;PSMD8;TIAL1;PSMD9;PSMD7;ZFYVE27;KAT5;AKT2;CPNE |
+| Nucleus (GO:0005634) | 2.45e-20 | 3.06e-18 | 109.6 | DCAF8;PSMD8;TIAL1;PSMD9;PSMD7;KAT5;AKT2;CPNE1;DPF2;SKP1;SAP3 |
+| Endoplasmic Reticulum Membrane (GO:0005789) | 2.77e-09 | 2.31e-07 | 54.7 | PIGS;ANKLE2;AHCYL1;PGAP2;SLC35B1;ZFYVE1;GBA2;SPPL3;ZFYVE27;S |
+| Bounding Membrane Of Organelle (GO:0098588) | 1.10e-07 | 6.86e-06 | 40.3 | ARF1;COPA;PGAP2;TMEM179B;VPS4A;ZDHHC5;AP2A1;SPPL3;ZDHHC3;APH |
+| U2-type Spliceosomal Complex (GO:0005684) | 3.63e-07 | 1.81e-05 | 99.9 | SF3B4;IK;SF3B2;PRPF38A;RBM8A;BUD31;CASC3;SMU1;SNW1;DHX16;BUD |
+| Endosome Membrane (GO:0010008) | 4.64e-07 | 1.93e-05 | 47.8 | RAB5C;VPS4A;AP2A1;APH1A;CLN3;ZFYVE27;PIP4P1;GGA3;VTI1A;RFFL; |
+| Clathrin-Coated Vesicle (GO:0030136) | 3.67e-06 | 1.31e-04 | 81.7 | DENND1A;CLTB;STX6;VTI1A;AP2A1;AP2B1;AP2M1;RAB8A;SPG21;VAMP3; |
+| Golgi Membrane (GO:0000139) | 1.10e-05 | 3.05e-04 | 31.1 | ARF1;COPA;PGAP2;ZDHHC5;GBA2;ZDHHC3;CDC42;CLN3;CYTH2;LMAN2;VT |
+| Spliceosomal snRNP Complex (GO:0097525) | 1.10e-05 | 3.05e-04 | 84.8 | SF3B4;SF3B2;TSSC4;DDX39B;DDX23;CD2BP2;BUD13;HNRNPC;TXNL4A |
+| Cytoplasmic Vesicle Membrane (GO:0030659) | 4.97e-05 | 1.24e-03 | 26.2 | TOR1A;ATP6AP1;TMEM179B;VPS4A;HLA-B;AP3D1;AP2A1;SNF8;AP2B1;SP |
+| Coated Vesicle Membrane (GO:0030662) | 6.26e-05 | 1.42e-03 | 65.1 | TEPSIN;SEC13;DENND1A;HLA-B;VTI1A;STX5;KDELR2;HLA-E |
+| Lysosomal Membrane (GO:0005765) | 9.91e-05 | 2.07e-03 | 24.3 | STARD3;SEC13;RAB5C;TMEM179B;AP3D1;LAPTM5;AP2A1;AP2B1;CLN3;PI |
+| Recycling Endosome (GO:0055037) | 1.86e-04 | 3.38e-03 | 30.4 | HLA-B;SNF8;HLA-E;SCAMP2;RAB11B;CLN3;ZFYVE27;GGA3;STX6;VIPAS3 |
+| Phagocytic Vesicle (GO:0045335) | 2.02e-04 | 3.38e-03 | 37.4 | PIP4P1;HGS;ZDHHC5;HLA-B;RAC2;STX4;RAB8A;HLA-E;VAMP3;RAB11B |
+| U2-type Precatalytic Spliceosome (GO:0071005) | 2.03e-04 | 3.38e-03 | 55.9 | SF3B4;SMU1;IK;SF3B2;PRPF38A;DHX16;TXNL4A |
+
+### GO_Molecular_Function_2023 (top 15)
+
+| Term | p | adj-p | combined | overlap |
+|---|---|---|---|---|
+| Ubiquitin-Like Protein Ligase Binding (GO:0044389) | 1.07e-09 | 2.32e-07 | 90.3 | DAZAP2;VCP;UBXN1;UBE2D2;UBE2D3;CASC3;ARRB2;SUMO1;PCBP2;SUMO2 |
+| Ubiquitin Protein Ligase Binding (GO:0031625) | 1.15e-09 | 2.32e-07 | 92.7 | DAZAP2;VCP;UBXN1;UBE2D2;UBE2D3;CASC3;ARRB2;SUMO1;PCBP2;SUMO2 |
+| RNA Binding (GO:0003723) | 1.21e-08 | 1.62e-06 | 40.9 | ARF1;CASC3;SMG7;AATF;TIAL1;RBM4;SUMO1;TMSB4X;SUMO2;ANXA7;DHX |
+| Ubiquitin Binding (GO:0043130) | 8.73e-08 | 8.79e-06 | 125.8 | UBXN1;UBE2A;GGA3;NPLOC4;HGS;NBR1;DHX16;UBAP1;IKBKG;RBCK1;RAE |
+| Ubiquitin-Like Protein Peptidase Activity (GO:0019783) | 8.95e-07 | 7.21e-05 | 183.8 | OTUD5;USP7;SUMO1;DESI1;USP9X;ATG4B;STAMBP;OTUB1 |
+| Ubiquitin-Like Protein Transferase Activity (GO:0019787) | 2.83e-06 | 1.90e-04 | 46.6 | BRAP;PIAS4;LRSAM1;UBE2I;UBE2D2;UBE2D3;WWP2;UBE2A;RNF40;CHFR; |
+| Protein Phosphatase Regulator Activity (GO:0019888) | 1.94e-05 | 1.12e-03 | 74.4 | IGBP1;PPP3R1;PPP6R1;PPP6R2;ENSA;PPP2R2D;PPP2R2A;CALM3;CALM1 |
+| Ubiquitin-Protein Transferase Activity (GO:0004842) | 4.56e-05 | 2.30e-03 | 26.0 | LRSAM1;PPP1R11;UBE2D2;UBE2D3;CDC42;RNF114;UBE2Q1;HECTD3;RFFL |
+| GTPase Binding (GO:0051020) | 5.47e-05 | 2.45e-03 | 32.0 | ATP6AP1;MAPKAP1;DAPK3;BRK1;STK19;RNF41;GGA3;TBC1D20;PPP6R1;G |
+| Protein Phosphatase Binding (GO:0019903) | 1.46e-04 | 5.90e-03 | 37.0 | IGBP1;ANKLE2;VCP;PPP1R11;ENSA;RPA2;STAT6;VRK3;MAP2K7;SMG7;ST |
+| Ubiquitin-Like Protein Conjugating Enzyme Activity (GO:0061650) | 2.08e-04 | 6.64e-03 | 69.2 | UBE2I;UBE2Q1;UBE2R2;UBE2D2;UBE2D3;UBE2A |
+| Protein Phosphatase 2A Binding (GO:0051721) | 2.22e-04 | 6.64e-03 | 92.0 | IGBP1;ANKLE2;ENSA;SMG7;STRN4 |
+| Ubiquitination-Like Modification-Dependent Protein Binding (GO:0140035) | 2.31e-04 | 6.64e-03 | 146.3 | DAXX;VCP;ANKRD13D;LAPTM5 |
+| K63-linked Deubiquitinase Activity (GO:0061578) | 2.31e-04 | 6.64e-03 | 146.3 | OTUD5;DESI1;USP9X;STAMBP |
+| Cysteine-Type Peptidase Activity (GO:0008234) | 2.74e-04 | 7.35e-03 | 29.6 | CASP9;OTUD5;USP7;SUMO1;DESI1;USP4;USP9X;UFD1;ATG4B;USP39;ATG |
+
+### KEGG_2021_Human (top 15)
+
+| Term | p | adj-p | combined | overlap |
+|---|---|---|---|---|
+| Endocytosis | 4.30e-14 | 1.05e-11 | 184.4 | ARF4;ARF1;RAB5C;SH3KBP1;VPS4A;CLTB;AP2A1;VPS26B;ARRB2;CDC42; |
+| Huntington disease | 3.85e-09 | 4.68e-07 | 79.5 | PSMD11;DCTN2;PSMD13;DCTN3;CLTB;AP2A1;NRF1;KLC1;PSMA7;PSMD8;C |
+| Salmonella infection | 8.08e-08 | 6.47e-06 | 67.2 | ARF1;MAP2K2;RAB5C;DCTN2;EXOC7;DCTN3;BRK1;KLC1;DNM2;CDC42;CYT |
+| Pathways of neurodegeneration | 1.39e-07 | 6.47e-06 | 48.1 | VCP;PSMD11;DCTN2;PSMD13;DCTN3;ARAF;HTRA2;KLC1;ZFYVE1;PSMA7;P |
+| Proteasome | 1.58e-07 | 6.47e-06 | 172.8 | PSMD8;PSMD9;PSMD11;PSMD7;PSMA1;PSMD13;POMP;PSMB1;ADRM1;PSMA7 |
+| Amyotrophic lateral sclerosis | 1.60e-07 | 6.47e-06 | 53.0 | VCP;PSMD11;DCTN2;PSMD13;DCTN3;KLC1;PSMA7;GLE1;PSMD8;CASP9;PS |
+| Spliceosome | 1.16e-06 | 4.01e-05 | 65.3 | SF3B4;SF3B2;PRPF38A;RBM8A;BUD31;DDX23;USP39;HNRNPK;SNW1;DDX3 |
+| Human immunodeficiency virus 1 infection | 1.71e-06 | 5.20e-05 | 52.5 | MAP2K2;HLA-B;HLA-E;GNAI2;CASP9;PPP3R1;AKT2;GNB2;GNB1;RPS6KB2 |
+| Alzheimer disease | 2.31e-06 | 6.23e-05 | 39.8 | PSMD11;PSMD13;ARAF;KLC1;PSMA7;PSMD8;APH1A;CASP9;PSMD9;PPP3R1 |
+| mRNA surveillance pathway | 6.04e-06 | 1.43e-04 | 66.7 | GLE1;PPP2CA;DDX39B;RBM8A;FIP1L1;PABPN1;PPP2R2D;SAP18;ACIN1;P |
+| Protein processing in endoplasmic reticulum | 6.46e-06 | 1.43e-04 | 49.3 | VCP;SEC13;UBXN1;ATF6B;UBE2D2;SSR2;UBE2D3;RPN1;UBE4B;NPLOC4;L |
+| Ubiquitin mediated proteolysis | 1.14e-05 | 2.30e-04 | 50.4 | PIAS4;UBE2I;UBE2D2;UBE2D3;UBE4B;WWP2;UBE2A;PIAS1;UBE2Q1;UBE2 |
+| Parkinson disease | 1.76e-05 | 3.29e-04 | 36.2 | DAXX;PSMD11;PSMD13;ADRM1;HTRA2;KLC1;PSMA7;GNAI2;PSMD8;CASP9; |
+| Apelin signaling pathway | 4.06e-05 | 7.05e-04 | 42.2 | SMAD2;MAP2K2;PRKAG1;NRF1;PRKAB1;PIK3R5;GNAI2;AKT2;GNB2;GNB1; |
+| Spinocerebellar ataxia | 6.35e-05 | 1.03e-03 | 38.4 | PSMD11;PSMD13;ADRM1;WIPI2;ATG13;PSMA7;PSMD8;PSMD9;PSMD7;KAT5 |
+
+
+## Bottom-1000 lowest-CV genes (CV ≤ 0.3529)
+
+_Enrichr userListId: `127825756`_
+
+### GO_Biological_Process_2023 (top 15)
+
+| Term | p | adj-p | combined | overlap |
+|---|---|---|---|---|
+| Ubiquitin-Dependent Protein Catabolic Process (GO:0006511) | 9.20e-27 | 2.91e-23 | 317.0 | GSK3A;UBXN1;PPP1R11;UBE2D2;ZFAND2B;UBE2D3;KEAP1;UBE3B;ARRB2; |
+| Proteasome-Mediated Ubiquitin-Dependent Protein Catabolic Process (GO:0043161) | 1.59e-20 | 2.51e-17 | 219.8 | GSK3A;UBXN1;ZFAND2B;UBE2D3;ARRB2;PSMD8;PSMD7;KAT5;CDC26;PSMD |
+| Proteasomal Protein Catabolic Process (GO:0010498) | 2.68e-18 | 2.82e-15 | 223.3 | VCP;GSK3A;UBXN1;PSMD11;PSMD13;ZFAND2B;UBE2D3;ARRB2;RNF4;PSMA |
+| Macroautophagy (GO:0016236) | 2.04e-15 | 1.61e-12 | 267.6 | BECN1;VCP;CALCOCO2;MTMR14;VPS4A;TCIRG1;ZFYVE1;GABARAP;CLN3;Z |
+| Intracellular Protein Transport (GO:0006886) | 5.73e-15 | 3.62e-12 | 129.4 | ARF4;ARF1;AP2A1;PHB2;EIF4ENIF1;AKT2;KPNA6;CHP1;TIMM17B;VPS35 |
+| mRNA Splicing, Via Spliceosome (GO:0000398) | 1.09e-14 | 5.73e-12 | 157.1 | SF3B4;ISY1;SF3B5;SF3B2;TSSC4;DHX8;RBM8A;DDX23;HNRNPU;CASC3;U |
+| RNA Splicing, Via Transesterification Reactions With Bulged Adenosine As Nucleophile (GO:0000377) | 2.83e-14 | 1.28e-11 | 163.6 | ISY1;SF3B4;SF3B5;SF3B2;DHX8;RBM8A;DDX23;HNRNPU;CASC3;USP39;E |
+| mRNA Processing (GO:0006397) | 8.75e-14 | 3.45e-11 | 139.9 | SF3B4;ISY1;SF3B5;SF3B2;DHX8;RBM8A;DDX23;HNRNPU;CASC3;USP39;E |
+| Modification-Dependent Protein Catabolic Process (GO:0019941) | 1.19e-12 | 4.16e-10 | 128.3 | PSMD11;PPP1R11;PSMD13;UBE2D2;UBE2D3;KEAP1;NEDD8;UBE3B;RNF7;U |
+| Protein Ubiquitination (GO:0016567) | 7.38e-11 | 2.33e-08 | 68.2 | LRSAM1;FBH1;UBE2D2;UBE2D3;KEAP1;ARRB2;UBE3B;DDA1;UBE2L3;BABA |
+| Regulation Of Proteasomal Ubiquitin-Dependent Protein Catabolic Process (GO:0032434) | 1.11e-10 | 3.20e-08 | 132.3 | VCP;GSK3A;UBXN1;ARAF;KEAP1;PARK7;GABARAP;DDA1;SUMO1;DDRGK1;S |
+| Golgi Vesicle Transport (GO:0048193) | 2.24e-10 | 5.90e-08 | 90.4 | ARF4;COPA;SAR1A;PEF1;PITPNB;RAB1B;STX18;SNX12;MIA3;GOLGA5;TF |
+| Protein Transport (GO:0015031) | 5.50e-10 | 1.34e-07 | 68.3 | ARF4;ARF1;LRSAM1;COPA;RAB5B;SYS1;RAB5C;SAR1A;STX16;RAB1B;VPS |
+| Protein Localization (GO:0008104) | 7.39e-10 | 1.67e-07 | 63.8 | ARF4;ARF1;COPA;RAB5B;RAB5C;SAR1A;STX16;RAB1B;VPS26C;DDX42;AP |
+| Endoplasmic Reticulum To Golgi Vesicle-Mediated Transport (GO:0006888) | 2.03e-09 | 4.08e-07 | 102.3 | TRAPPC3;ARF4;COPA;SEC13;TMED9;SAR1A;PEF1;RAB1B;MIA3;NRBP1;AR |
+
+### GO_Cellular_Component_2023 (top 15)
+
+| Term | p | adj-p | combined | overlap |
+|---|---|---|---|---|
+| Intracellular Membrane-Bounded Organelle (GO:0043231) | 4.43e-35 | 1.42e-32 | 182.4 | HNRNPU;DCAF8;GPATCH3;PHB2;PSMD8;PSMD9;ALKBH5;PSMD7;ZFYVE27;T |
+| Nucleus (GO:0005634) | 4.56e-32 | 7.32e-30 | 164.1 | HNRNPU;DCAF8;GPATCH3;PHB2;PSMD8;PSMD9;ALKBH5;PSMD7;AKT2;PSMD |
+| Endoplasmic Reticulum Membrane (GO:0005789) | 2.54e-12 | 2.71e-10 | 66.1 | PIGS;ANKLE2;AHCYL1;PGAP2;GPAA1;ADPGK;PITPNB;SLC35B1;ATP2A3;M |
+| U2-type Spliceosomal Complex (GO:0005684) | 3.93e-10 | 3.15e-08 | 135.6 | ISY1;SF3B4;SF3B5;IK;SF3B2;PRPF38A;DHX8;RBM8A;CCDC12;BUD31;CA |
+| Bounding Membrane Of Organelle (GO:0098588) | 1.42e-09 | 9.10e-08 | 45.1 | ARF1;PGAP2;TMEM179B;PITPNB;ZDHHC5;ATP2A3;AP2A1;TCIRG1;AP2A2; |
+| Endosome Membrane (GO:0010008) | 5.56e-09 | 2.97e-07 | 54.4 | RAB5B;RAB5C;VPS4A;SNX12;WASHC2C;AP2A1;TCIRG1;AP2A2;APH1A;CLN |
+| Lysosomal Membrane (GO:0005765) | 1.04e-08 | 4.79e-07 | 52.0 | RAB5C;TMEM179B;BRI3;AP2A1;TCIRG1;AP2A2;CLN3;ZFYVE26;NCSTN;PI |
+| Clathrin-Coated Vesicle (GO:0030136) | 2.33e-07 | 9.36e-06 | 82.0 | TMED9;DENND1A;TNK2;VPS33B;CLTB;AP2A1;AP2B1;AP2A2;UNC13D;TGOL |
+| U2-type Precatalytic Spliceosome (GO:0071005) | 5.53e-07 | 1.97e-05 | 100.0 | SF3B4;SF3B5;IK;SF3B2;PRPF38A;SMU1;SART1;RNF113A;ZMAT2;RBMX2; |
+| Golgi Membrane (GO:0000139) | 8.46e-07 | 2.71e-05 | 32.9 | ARF1;COPA;PGAP2;STX16;RAB1B;PITPNB;SLC35D2;ZDHHC5;GBA2;ZDHHC |
+| Lytic Vacuole Membrane (GO:0098852) | 1.05e-06 | 3.06e-05 | 37.1 | RAB5C;TCIRG1;CLN3;ZFYVE26;NCSTN;PIP4P1;LAMP1;PSAP;ATP6V1H;VP |
+| Precatalytic Spliceosome (GO:0071011) | 1.16e-06 | 3.11e-05 | 87.5 | SF3B4;SF3B5;IK;SF3B2;PRPF38A;SMU1;SART1;RNF113A;ZMAT2;RBMX2; |
+| Lysosome (GO:0005764) | 1.35e-06 | 3.34e-05 | 29.8 | TCIRG1;TIAL1;ZFYVE26;PIP4P1;LAMP1;VPS35;ATP6V1E1;VPS39;AP2M1 |
+| Autophagosome (GO:0005776) | 2.97e-06 | 6.82e-05 | 58.5 | BECN1;CALCOCO2;ATG9A;WIPI2;ZFYVE1;GABARAP;CLN3;NBR1;UBQLN1;V |
+| Cytoplasmic Stress Granule (GO:0010494) | 4.44e-06 | 9.50e-05 | 58.3 | DAZAP2;VCP;YTHDF1;YTHDF2;STAU1;CIRBP;LARP4B;GIGYF2;TIAL1;RBM |
+
+### GO_Molecular_Function_2023 (top 15)
+
+| Term | p | adj-p | combined | overlap |
+|---|---|---|---|---|
+| RNA Binding (GO:0003723) | 2.90e-17 | 1.64e-14 | 90.5 | HDLBP;HNRNPU;CASC3;PARK7;APEH;SRP14;UBE2L3;LSM10;YY1;TIAL1;E |
+| Ubiquitin-Like Protein Ligase Binding (GO:0044389) | 7.58e-13 | 2.14e-10 | 106.7 | YWHAE;RNF31;DAZAP2;BECN1;VCP;UBXN1;UBE2D2;UBE2D3;NEDD8;CASC3 |
+| Ubiquitin Protein Ligase Binding (GO:0031625) | 1.67e-11 | 3.13e-09 | 91.8 | YWHAE;RNF31;DAZAP2;BECN1;VCP;UBXN1;UBE2D2;UBE2D3;NEDD8;CASC3 |
+| Ubiquitin Binding (GO:0043130) | 1.03e-08 | 1.45e-06 | 110.6 | RNF31;UBXN1;UBE2A;RAD23B;SIRT2;GGA3;NPLOC4;HGS;TOLLIP;NBR1;D |
+| Ubiquitin-Like Protein Transferase Activity (GO:0019787) | 1.34e-07 | 1.51e-05 | 49.0 | RNF31;LRSAM1;UBE2D2;UBE2D3;RNF7;RNF4;UBE2L3;HECTD3;VHL;BRAP; |
+| Ubiquitin-Protein Transferase Activity (GO:0004842) | 3.06e-07 | 2.87e-05 | 36.8 | RNF31;LRSAM1;PPP1R11;UBE2D2;UBE2D3;UBR2;UBE3B;RNF7;UBE2Z;RNF |
+| Ubiquitin-Like Protein Conjugating Enzyme Activity (GO:0061650) | 6.37e-07 | 5.13e-05 | 125.5 | UBE2I;UBE2Q1;UBE2R2;UBE2D2;UBE2E3;UBE2D3;UBE2G1;UBE2A;UBE2Z; |
+| mRNA Binding (GO:0003729) | 1.93e-06 | 1.36e-04 | 35.0 | RBM8A;POLDIP3;HDLBP;HNRNPU;PARK7;TIAL1;EIF4ENIF1;RBM4;FXR2;P |
+| Ubiquitin Conjugating Enzyme Activity (GO:0061631) | 2.20e-06 | 1.38e-04 | 113.5 | UBE2Q1;UBE2R2;UBE2D2;UBE2E3;UBE2D3;UBE2G1;UBE2A;UBE2Z;UBE2K; |
+| Kinase Binding (GO:0019900) | 6.39e-06 | 3.60e-04 | 25.9 | BECN1;SP100;DCTN2;DCTN1;MAPKAP1;AGAP2;PRKAG1;AP2A1;PARK7;WDR |
+| GTPase Binding (GO:0051020) | 8.36e-06 | 4.29e-04 | 32.1 | BECN1;MAPKAP1;BRK1;STK19;GOLGA5;GGA3;PPP6R1;PDE6D;DVL3;PAK2; |
+| DNA-binding Transcription Factor Binding (GO:0140297) | 1.36e-05 | 6.39e-04 | 27.8 | DAZAP2;HDAC3;LDB1;CTBP1;MAX;HDAC1;KEAP1;PARK7;YY1;PSMD9;CHCH |
+| Phosphoserine Residue Binding (GO:0050815) | 1.53e-05 | 6.62e-04 | 352.9 | YWHAE;YWHAB;PCIF1;PIN1;YWHAZ |
+| Ubiquitin-Like Protein Peptidase Activity (GO:0019783) | 1.86e-05 | 7.50e-04 | 81.6 | OTUD5;USP7;SUMO1;DESI1;USP21;USP9X;ATG4B;STAMBP;OTUB1 |
+| GTPase Regulator Activity (GO:0030695) | 2.00e-05 | 7.54e-04 | 23.1 | CDC42SE1;ARF4;GDI1;DENND1A;AGAP2;GPS2;RASGRP2;ARHGAP4;RIC8A; |
+
+### KEGG_2021_Human (top 15)
+
+| Term | p | adj-p | combined | overlap |
+|---|---|---|---|---|
+| Endocytosis | 1.37e-18 | 3.71e-16 | 212.1 | ARF4;ARF1;SH3KBP1;CLTB;SNX12;WASHC2C;AP2A1;ARRB2;AP2A2;ZFYVE |
+| Huntington disease | 4.06e-16 | 5.50e-14 | 150.5 | NDUFA11;COX4I1;NDUFA10;CLTB;AP2A1;COX6A1;AP2A2;PSMD8;CASP9;P |
+| Pathways of neurodegeneration | 4.33e-14 | 2.87e-12 | 98.8 | NDUFA11;COX4I1;NDUFA10;ARAF;ATP2A3;PARK7;COX6A1;ZFYVE1;UBE2L |
+| Parkinson disease | 4.92e-14 | 2.87e-12 | 133.0 | PSMD11;NDUFA11;NDUFB10;PSMD13;COX4I1;NDUFB4;NDUFA10;HTRA2;PA |
+| Amyotrophic lateral sclerosis | 5.30e-14 | 2.87e-12 | 110.0 | NDUFA11;COX4I1;NDUFA10;COX6A1;ACTG1;GLE1;PSMD8;CASP9;PSMD9;A |
+| Alzheimer disease | 4.02e-12 | 1.82e-10 | 86.8 | NDUFA11;COX4I1;NDUFA10;ARAF;ATP2A3;COX6A1;PSMD8;IKBKB;CASP9; |
+| Proteasome | 2.96e-11 | 1.14e-09 | 274.3 | PSMD11;PSMD13;POMP;ADRM1;PSMA7;PSMB6;PSMD8;PSMB7;PSMD9;PSMB4 |
+| Prion disease | 9.80e-10 | 3.32e-08 | 69.6 | PSMD11;NDUFA11;NDUFB10;ATF6B;PSMD13;COX4I1;NDUFB4;NDUFA10;CO |
+| Ubiquitin mediated proteolysis | 1.29e-09 | 3.78e-08 | 94.9 | UBE2D2;UBE2D3;KEAP1;UBE3B;RNF7;UBE2Z;UBE2L3;UBE2Q1;CDC26;VHL |
+| Spliceosome | 1.40e-09 | 3.78e-08 | 90.9 | ISY1;SF3B4;SF3B5;SF3B2;DHX8;RBM8A;DDX23;DDX42;HNRNPU;USP39;P |
+| Salmonella infection | 2.81e-09 | 6.92e-08 | 67.0 | ARF1;RAB5B;RAB5C;DCTN2;DCTN1;FHOD1;DCTN4;DCTN3;BRK1;KLC1;ACT |
+| Protein processing in endoplasmic reticulum | 1.08e-07 | 2.45e-06 | 58.3 | VCP;UBXN1;SAR1A;ATF6B;UBE2D2;UBE2D3;RPN1;DERL2;OS9;LMAN2;UBQ |
+| Autophagy | 3.05e-07 | 6.35e-06 | 58.5 | IGBP1;ATG3;BECN1;MAP2K2;MTMR14;ATG9A;DAPK3;WIPI2;ZFYVE1;ATG1 |
+| Non-alcoholic fatty liver disease | 7.86e-07 | 1.52e-05 | 49.8 | COX8A;GSK3A;NDUFA11;NDUFB10;COX4I1;NDUFB4;NDUFA10;PRKAG1;COX |
+| mRNA surveillance pathway | 1.52e-06 | 2.75e-05 | 58.1 | UPF2;CPSF7;RBM8A;SSU72;PPP2R2A;CASC3;SMG7;WDR33;GLE1;PPP2CA; |

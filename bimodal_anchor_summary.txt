@@ -1,0 +1,260 @@
+BIMODAL ANCHOR GENE ANALYSIS - GTEx Whole Blood
+============================================================
+
+Total genes: 74628
+Total samples: 803
+Bimodal genes detected: 901
+
+PCA split (before filtering):
+  State A (PC1 > 0):  434 samples
+  State B (PC1 <= 0): 369 samples
+
+Anchor genes (98% threshold): 2
+Anchor genes (95% threshold): 58
+
+ANCHOR GENES (98% threshold):
+------------------------------------------------------------
+  ENSG00000168209.6    | DDIT4                                             
+    State A mode: HIGH, State B mode: LOW
+    frac_A_high=0.9862, frac_B_high=0.0190
+    Peaks at log2CPM: 5.26, 9.83 (threshold: 7.55)
+
+  ENSG00000165879.9    | FRAT1                                             
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0184, frac_B_high=0.9864
+    Peaks at log2CPM: 4.51, 7.80 (threshold: 6.15)
+
+
+ADDITIONAL ANCHOR GENES (95% but not 98%):
+------------------------------------------------------------
+  ENSG00000157916.20   | RER1                                              
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0369, frac_B_high=0.9593
+
+  ENSG00000169403.12   | PTAFR                                             
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0438, frac_B_high=0.9864
+
+  ENSG00000130772.14   | MED18                                             
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0230, frac_B_high=0.9973
+
+  ENSG00000177606.9    | JUN                                               
+    State A mode: HIGH, State B mode: LOW
+    frac_A_high=0.9816, frac_B_high=0.0271
+
+  ENSG00000163154.6    | TNFAIP8L2                                         
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0300, frac_B_high=0.9919
+
+  ENSG00000273002.2    | ARHGEF2-AS2                                       
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0323, frac_B_high=0.9593
+
+  ENSG00000213062.6    | ENSG00000213062                                   
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0253, frac_B_high=0.9621
+
+  ENSG00000123689.6    | G0S2                                              
+    State A mode: HIGH, State B mode: LOW
+    frac_A_high=0.9839, frac_B_high=0.0461
+
+  ENSG00000261338.2    | ENSG00000261338                                   
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0415, frac_B_high=0.9593
+
+  ENSG00000036257.14   | CUL3                                              
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0207, frac_B_high=0.9512
+
+  ENSG00000134107.5    | BHLHE40                                           
+    State A mode: HIGH, State B mode: LOW
+    frac_A_high=0.9724, frac_B_high=0.0108
+
+  ENSG00000171148.14   | TADA3                                             
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0484, frac_B_high=0.9810
+
+  ENSG00000114383.10   | TUSC2                                             
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0184, frac_B_high=0.9675
+
+  ENSG00000247596.10   | TWF2                                              
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0323, frac_B_high=0.9729
+
+  ENSG00000181631.7    | P2RY13                                            
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0369, frac_B_high=0.9892
+
+  ENSG00000121858.11   | TNFSF10                                           
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0392, frac_B_high=0.9810
+
+  ENSG00000249915.9    | PDCD6                                             
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0438, frac_B_high=0.9729
+
+  ENSG00000272086.3    | GOLPH3-DT                                         
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0369, frac_B_high=0.9702
+
+  ENSG00000271862.1    | ENSG00000271862                                   
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0346, frac_B_high=0.9621
+
+  ENSG00000113070.8    | HBEGF                                             
+    State A mode: HIGH, State B mode: LOW
+    frac_A_high=0.9770, frac_B_high=0.0461
+
+  ENSG00000293441.2    | ENSG00000293441                                   
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0484, frac_B_high=0.9729
+
+  ENSG00000164576.12   | SAP30L                                            
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0230, frac_B_high=0.9919
+
+  ENSG00000272501.2    | ENSG00000272501                                   
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0253, frac_B_high=0.9702
+
+  ENSG00000235863.4    | B3GALT4                                           
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0461, frac_B_high=0.9702
+
+  ENSG00000112715.26   | VEGFA                                             
+    State A mode: HIGH, State B mode: LOW
+    frac_A_high=0.9631, frac_B_high=0.0081
+
+  ENSG00000135245.10   | HILPDA                                            
+    State A mode: HIGH, State B mode: LOW
+    frac_A_high=0.9793, frac_B_high=0.0136
+
+  ENSG00000147872.10   | PLIN2                                             
+    State A mode: HIGH, State B mode: LOW
+    frac_A_high=0.9608, frac_B_high=0.0136
+
+  ENSG00000160446.19   | ZDHHC12                                           
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0484, frac_B_high=0.9702
+
+  ENSG00000180539.8    | LINC02908                                         
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0300, frac_B_high=0.9783
+
+  ENSG00000151465.14   | CDC123                                            
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0369, frac_B_high=0.9566
+
+  ENSG00000152804.11   | HHEX                                              
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0230, frac_B_high=0.9512
+
+  ENSG00000225850.5    | ENSG00000225850                                   
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0253, frac_B_high=0.9675
+
+  ENSG00000168003.19   | SLC3A2                                            
+    State A mode: HIGH, State B mode: LOW
+    frac_A_high=0.9654, frac_B_high=0.0379
+
+  ENSG00000188997.8    | KCTD21                                            
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0323, frac_B_high=0.9837
+
+  ENSG00000160703.17   | NLRX1                                             
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0253, frac_B_high=0.9648
+
+  ENSG00000276136.1    | ENSG00000276136                                   
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0392, frac_B_high=0.9566
+
+  ENSG00000155957.19   | TMBIM4                                            
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0323, frac_B_high=0.9593
+
+  ENSG00000231856.5    | ENSG00000231856                                   
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0300, frac_B_high=0.9566
+
+  ENSG00000100938.19   | GMPR2                                             
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0369, frac_B_high=0.9593
+
+  ENSG00000185905.4    | C16orf54                                          
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0253, frac_B_high=0.9512
+
+  ENSG00000159792.10   | PSKH1                                             
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0484, frac_B_high=0.9621
+
+  ENSG00000132589.16   | FLOT2                                             
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0438, frac_B_high=0.9702
+
+  ENSG00000277632.2    | CCL3                                              
+    State A mode: HIGH, State B mode: LOW
+    frac_A_high=0.9631, frac_B_high=0.0217
+
+  ENSG00000180901.11   | KCTD2                                             
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0207, frac_B_high=0.9892
+
+  ENSG00000288156.1    | ENSG00000288156                                   
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0253, frac_B_high=0.9702
+
+  ENSG00000076662.11   | ICAM3                                             
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0230, frac_B_high=0.9512
+
+  ENSG00000105514.8    | RAB3D                                             
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0230, frac_B_high=0.9648
+
+  ENSG00000087074.9    | PPP1R15A                                          
+    State A mode: HIGH, State B mode: LOW
+    frac_A_high=0.9516, frac_B_high=0.0217
+
+  ENSG00000268595.2    | ENSG00000268595                                   
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0138, frac_B_high=0.9702
+
+  ENSG00000132801.7    | ZSWIM3                                            
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0276, frac_B_high=0.9675
+
+  ENSG00000158480.11   | SPATA2                                            
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0369, frac_B_high=0.9593
+
+  ENSG00000125510.18   | OPRL1                                             
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0415, frac_B_high=0.9512
+
+  ENSG00000183762.13   | KREMEN1                                           
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0438, frac_B_high=0.9539
+
+  ENSG00000241878.12   | PISD                                              
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0300, frac_B_high=0.9756
+
+  ENSG00000185022.12   | MAFF                                              
+    State A mode: HIGH, State B mode: LOW
+    frac_A_high=0.9562, frac_B_high=0.0244
+
+  ENSG00000235568.7    | NFAM1                                             
+    State A mode: LOW, State B mode: HIGH
+    frac_A_high=0.0230, frac_B_high=0.9837
+
+
+SAMPLE FILTERING:
+------------------------------------------------------------
+  Ambiguous samples removed: 18
+  Final State A: 424
+  Final State B: 361
+  Total remaining: 785
